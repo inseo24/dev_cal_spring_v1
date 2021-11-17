@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,10 +29,11 @@ public class BoardController {
 	public BoardService service;
 
 	@PostMapping
-	public ResponseEntity<?> createBoard(@RequestBody BoardDTO dto) {
+	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
+		
+		
 		try {
-			String temporaryUserId = "temporary-user";
-
+			
 			// BoardEntity로 변환
 			BoardEntity entity = BoardDTO.toEntity(dto);
 
@@ -42,9 +44,8 @@ public class BoardController {
 			entity.setCreatedTime(new Date().getTime());
 			entity.setModified_date(new Date().getTime());
 
-			// 임시 사용자 아이디 설정, 이 부분은 차후 수정 예정(인증, 인가)
-			// 현재는 인증, 인가 기능이 없으므로 temporary-user만 로드인 없이 사용할 수 있는 애플리케이션
-			entity.setUserId(temporaryUserId);
+			// 사용자 아이디 설정
+			entity.setUserId(userId);
 
 			// 서비스를 이용해 Board 엔티티 생성
 			List<BoardEntity> entities = service.createBoard(entity);
@@ -66,11 +67,10 @@ public class BoardController {
 	}
 
 	@GetMapping
-	public ResponseEntity<?> retrieveBoardList() {
-		String temporaryUserId = "temporary-user";
+	public ResponseEntity<?> retrieveBoardList(@AuthenticationPrincipal String userId) {
 
 		// 서비스 메서드의 retrieve() 메서드를 사용해 boardList를 가져옴
-		List<BoardEntity> entities = service.retrieve(temporaryUserId);
+		List<BoardEntity> entities = service.retrieve(userId);
 
 		// 자바 스트림을 이용해 리턴된 엔티티 리스트를 BoardList로 변환
 		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
@@ -83,14 +83,12 @@ public class BoardController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> updateBoard(@RequestBody BoardDTO dto) {
-		String temporaryUserId = "temporary-user";
-
+	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
+		
 		// dto를 entity로 변환
 		BoardEntity entity = BoardDTO.toEntity(dto);
 
-		// id를 temporaryUserId로 초기화한다. 여기도 이후 수정 예정
-		entity.setUserId(temporaryUserId);
+		entity.setUserId(userId);
 
 		// 서비스를 이용해 entity를 업데이트
 		List<BoardEntity> entities = service.updateBoard(entity);
@@ -107,15 +105,13 @@ public class BoardController {
 	}
 
 	@DeleteMapping
-	public ResponseEntity<?> deleteBoard(@RequestBody BoardDTO dto) {
+	public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
 		try {
-			String temporaryUserId = "temporary-user";
 
 			// boardEntity로 변환
 			BoardEntity entity = BoardDTO.toEntity(dto);
 
-			// id를 temporaryUserId로 초기화한다. 여기도 이후 수정 예정
-			entity.setUserId(temporaryUserId);
+			entity.setUserId(userId);
 
 			// 서비스를 이용해 삭제
 			List<BoardEntity> entities = service.deleteBoard(entity);
