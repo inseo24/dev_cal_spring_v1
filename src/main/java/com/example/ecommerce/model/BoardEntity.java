@@ -25,6 +25,8 @@ public class BoardEntity {
 	@GenericGenerator(name="system-uuid", strategy="uuid")
 	private String boardId;
 	
+	
+	
 	private String userId;
 	private String title;
 	private String content;
