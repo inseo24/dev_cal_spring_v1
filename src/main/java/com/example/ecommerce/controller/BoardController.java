@@ -1,6 +1,5 @@
 package com.example.ecommerce.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -81,6 +81,23 @@ public class BoardController {
 		// ResponseDTO 반환
 		return ResponseEntity.ok().body(response);
 	}
+	
+	@GetMapping("/{boardId}")
+	public ResponseEntity<?> retrieveBoardItem(@PathVariable String boardId) {
+
+		// 서비스 메서드의 retrieve() 메서드를 사용해 boardList를 가져옴
+		List<BoardEntity> entities = service.retrieveItem(boardId);
+
+		// 자바 스트림을 이용해 리턴된 엔티티 리스트를 BoardList로 변환
+		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
+
+		// 변환된 BoardDTO 리스트를 이용해 ResponseDTO를 초기화
+		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
+
+		// ResponseDTO 반환
+		return ResponseEntity.ok().body(response);
+	}
+
 
 	@PutMapping
 	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {

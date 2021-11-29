@@ -36,12 +36,13 @@ public class UserService {
 		
 		final UserEntity originalUser = userRepo.findByEmail(email);
 		
+		System.out.println(originalUser.getPassword());
+		System.out.println(password);
+
 		// matches 메서드를 이용해 패스워드가 같은지 확인
-		if(originalUser != null && 
-				encoder.matches(password, 
-				originalUser.getPassword())){
-			return originalUser;
-		}
+				if(originalUser != null && encoder.matches(password, originalUser.getPassword())) {
+					return originalUser;
+				}
 		
 		return null;
 	}

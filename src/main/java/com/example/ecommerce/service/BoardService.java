@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.model.BoardEntity;
@@ -31,7 +32,7 @@ public class BoardService {
 		}
 
 		if (entity.getUserId() == null) {
-			log.warn("Unknownn user.");
+			log.warn("Unknown user.");
 			throw new RuntimeException("Unknown user.");
 		}
 	}
@@ -46,14 +47,19 @@ public class BoardService {
 
 		log.info("Entity Id : {} is saved", entity.getUserId());
 
-		return repo.findByUserId(entity.getUserId());
+		return repo.findByBoardId(entity.getBoardId());
 	}
 	
 	// retrieve
-	public List<BoardEntity> retrieve(final String userId){
-		return repo.findByUserId(userId);
+	public List<BoardEntity> retrieve(final String boardId){
+		return repo.findAll(Sort.by("boardId").descending());
 	}
 	
+	// retrieve
+	public List<BoardEntity> retrieveItem(final String boardId){
+		return repo.findByBoardId(boardId);
+	}
+
 	// update
 	public List<BoardEntity> updateBoard(final BoardEntity entity){
 		validate(entity);
