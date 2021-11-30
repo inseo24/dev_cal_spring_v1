@@ -20,9 +20,6 @@ public class BoardService {
 	@Autowired
 	private BoardRepository repo;
 
-	public String testService() {
-		return null;
-	}
 
 	private void validate(final BoardEntity entity) {
 		// validation

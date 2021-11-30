@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests() 
 						.antMatchers("/", "/auth/**", "/board/**", "/event/**").permitAll()
 				.anyRequest() 
-						.authenticated();
+						.authenticated(); 
 
 		
 		http.addFilterAfter(

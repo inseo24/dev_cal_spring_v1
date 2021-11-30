@@ -8,8 +8,11 @@ import com.example.ecommerce.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/auth")
 public class UserController {
 
 	@Autowired
@@ -26,11 +28,10 @@ public class UserController {
 	@Autowired
 	private TokenProvider tokenProvider;
 
-	// Bean으로 작성해도 됨.
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	
 
-
-	@PostMapping("/signup")
+	@PostMapping("/auth/signup")
 	public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
 		try {
 			// 리퀘스트를 이용해 저장할 유저 만들기
@@ -57,7 +58,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/signin")
+	@PostMapping("/auth/signin")
 	public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
 		UserEntity user = userService.getByCredentials(
 						userDTO.getEmail(),
@@ -68,10 +69,13 @@ public class UserController {
 			// 토큰 생성
 			final String token = tokenProvider.create(user);
 			final UserDTO responseUserDTO = UserDTO.builder()
-							.email(user.getUsername())
+							.email(user.getEmail())
+							.username(user.getUsername())
 							.id(user.getId())
 							.token(token)
 							.build();
+			
+			
 			return ResponseEntity.ok().body(responseUserDTO);
 		} else {
 			ResponseDTO responseDTO = ResponseDTO.builder()
@@ -82,4 +86,7 @@ public class UserController {
 							.body(responseDTO);
 		}
 	}
+	
+	
+	
 }
