@@ -1,5 +1,7 @@
 package com.example.ecommerce.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,15 +20,19 @@ public class UserService {
 	
 	
 	public UserEntity create(final UserEntity userEntity) {
+		
+		
 		if (userEntity == null || userEntity.getEmail() == null ) {
 			throw new RuntimeException("Invalid arguments");
 		}
 		
 		final String email = userEntity.getEmail();
+		
 		if (userRepo.existsByEmail(email)) {
 			log.warn("Email already exists {}", email);
 			throw new RuntimeException("Email already exists");
 		}
+		
 		
 		return userRepo.save(userEntity);
 	}

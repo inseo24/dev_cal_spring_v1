@@ -1,5 +1,6 @@
 package com.example.ecommerce.service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +69,7 @@ public class BoardService {
 			// 반환된 엔티티가 존쟇면 값을 새 엔티티 값으로 덮어 씌움
 			board.setTitle(entity.getTitle());
 			board.setContent(entity.getContent());
-			board.setModified_date(new Date().getTime());
+			board.setModified_date(LocalDateTime.now());
 		
 			// db에 새로운 값을 저장
 			repo.save(board);

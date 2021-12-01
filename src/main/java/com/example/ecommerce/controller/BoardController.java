@@ -1,6 +1,5 @@
 package com.example.ecommerce.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,10 +38,6 @@ public class BoardController {
 
 			// id를 null로 초기화, 생성 당시에는 id가 없어야함
 			entity.setUserId(null);
-
-			// 시간 설정
-			entity.setCreatedTime(new Date().getTime());
-			entity.setModified_date(new Date().getTime());
 
 			// 사용자 아이디 설정
 			entity.setUserId(userId);

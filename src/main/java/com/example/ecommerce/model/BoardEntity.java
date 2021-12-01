@@ -1,8 +1,11 @@
 package com.example.ecommerce.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -30,6 +33,11 @@ public class BoardEntity {
 	private String userId;
 	private String title;
 	private String content;
-	private Long createdTime; 
-	private Long modified_date;
+	private LocalDateTime createdTime; 
+	private LocalDateTime modified_date;
+	
+	@PrePersist
+	public void createdTime() {
+		this.createdTime = LocalDateTime.now();
+	}
 }

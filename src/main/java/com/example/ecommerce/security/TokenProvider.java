@@ -45,7 +45,7 @@ public class TokenProvider {
 				// header에 들어갈 내용 및 서명을 하기 위한 SECRET_KEY
 				.signWith(SignatureAlgorithm.HS512, SECRETE_KEY)
 				// payload에 들어갈 내요
-				.setSubject(userEntity.getId()) // sub
+				.setSubject(userEntity.getUserId()) // sub
 				.setIssuer("서인이의 얼렁뚱땅 마켓") // iss
 				.setIssuedAt(new Date()) // iat
 				.setExpiration(expiryDate) // exp

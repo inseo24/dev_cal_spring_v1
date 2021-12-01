@@ -6,17 +6,14 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ecommerce.dto.BoardDTO;
 import com.example.ecommerce.dto.EventDTO;
 import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.model.BoardEntity;
 import com.example.ecommerce.model.EventEntity;
 import com.example.ecommerce.service.EventService;
 
@@ -47,8 +44,6 @@ public class EventController {
 		try {
 			
 			EventEntity entity = EventDTO.toEntity(dto);
-
-			entity.setCreatedTime(new Date().getTime());
 	
 			List<EventEntity> entities = service.create(entity);
 

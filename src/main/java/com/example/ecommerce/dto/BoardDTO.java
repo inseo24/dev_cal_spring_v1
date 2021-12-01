@@ -1,5 +1,7 @@
 package com.example.ecommerce.dto;
 
+import java.time.LocalDateTime;
+
 import com.example.ecommerce.model.BoardEntity;
 
 import lombok.AllArgsConstructor;
@@ -15,8 +17,8 @@ public class BoardDTO {
 	private String boardId;
 	private String title;
 	private String content;
-	private Long createdTime;
-	private Long modified_date;
+	private LocalDateTime createdTime;
+	private LocalDateTime modified_date;
 	
 	public BoardDTO(final BoardEntity entity) {
 		this.boardId = entity.getBoardId();

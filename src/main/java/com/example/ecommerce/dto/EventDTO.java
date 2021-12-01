@@ -18,7 +18,7 @@ public class EventDTO {
 	private String title;
 	private LocalDateTime start;
 	private LocalDateTime end;
-	private Long createdTime;
+	private LocalDateTime createdTime;
 	private String host;
 	private String time_required;
 	private String cost;
