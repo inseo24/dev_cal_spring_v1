@@ -1,25 +1,33 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.dto.CMResponseDTO;
 import com.example.ecommerce.dto.ResponseDTO;
 import com.example.ecommerce.dto.UserDTO;
+import com.example.ecommerce.dto.UserUpdateDTO;
 import com.example.ecommerce.handler.ex.CustomValidationException;
+import com.example.ecommerce.model.ScrapEntity;
 import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.UserRepository;
 import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +37,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserRepository userRepo;
 
 	@Autowired
 	private TokenProvider tokenProvider;
@@ -102,6 +113,20 @@ public class UserController {
 							.badRequest()
 							.body(responseDTO);
 		}
+	}
+	
+	@PutMapping("/auth/update")
+	public CMResponseDTO<?> updatePassword(@AuthenticationPrincipal String userId, @RequestBody @Valid UserUpdateDTO userDTO){
+		
+		UserEntity user = userService.update(userId, userDTO.toEntity());
+		
+		log.info("user: " + user);
+		
+		userRepo.save(user);
+		
+		return new CMResponseDTO<>(1, "회원 정보 수정 완료", user);
+				
+	
 	}
 	
 	

@@ -16,5 +16,8 @@ public interface ScrapRepository extends JpaRepository<ScrapEntity, Integer>{
 	@Modifying
 	@Query(value = "DELETE FROM scrap WHERE event_id = :eventId AND user_id = :userId", nativeQuery = true)
 	void unscrap(@Param("eventId") String eventId,@Param("userId") String userId);
+	
+	@Query(value = "SELECT * FROM scrap WHERE user_id = :userId", nativeQuery = true)
+	void retrieveScrap(@Param("userId") String userId);
 
 }

@@ -51,10 +51,6 @@ public class UserEntity {
 	
 	private LocalDateTime modifiedTime;
 	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<ScrapEntity> scrap = new ArrayList<>();
-
-	
 	@PrePersist
 	public void createdTime() {
 		this.createdTime = LocalDateTime.now();
