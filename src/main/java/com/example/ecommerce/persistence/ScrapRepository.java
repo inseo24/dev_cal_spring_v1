@@ -7,14 +7,14 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.ecommerce.model.ScrapEntity;
 
-public interface ScrapRepository extends JpaRepository<ScrapEntity, String>{
+public interface ScrapRepository extends JpaRepository<ScrapEntity, Integer>{
 	
 	@Modifying
 	@Query(value = "INSERT INTO scrap(event_id, user_id, created_time) VALUES(:eventId, :userId, now())", nativeQuery = true)
 	void scrap(@Param("eventId") String eventId,@Param("userId") String userId);
 	
 	@Modifying
-	@Query(value = "DELETE scrap WHERE eventId = :eventId AND userID = :userId", nativeQuery = true)
+	@Query(value = "DELETE FROM scrap WHERE event_id = :eventId AND user_id = :userId", nativeQuery = true)
 	void unscrap(@Param("eventId") String eventId,@Param("userId") String userId);
 
 }
