@@ -1,14 +1,19 @@
 package com.example.ecommerce.service;
 
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import com.example.ecommerce.model.ScrapEntity;
 import com.example.ecommerce.persistence.ScrapRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class ScrapService {
 	
@@ -26,8 +31,11 @@ public class ScrapService {
 	}
 	
 	@Transactional
-	public void retrieve(String userId) {
-		scrapRepository.retrieveScrap(userId);
+	public List<ScrapEntity> retrieve(String userId) {
+		
+		log.info("userId : " + userId);
+		
+		return scrapRepository.retrieveScrap(userId);
 	}
 	
 }

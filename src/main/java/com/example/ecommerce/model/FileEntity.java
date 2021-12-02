@@ -4,11 +4,10 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,23 +19,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "Board")
-public class BoardEntity {
+@Table(name = "files")
+public class FileEntity {
 	
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy="uuid")
-	private String boardId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
-	private String userId;
-	private String title;
-	private String content;
+	private String type;
+	
+	private String name;
+	
+	private String imgUrl;
+	
 	private LocalDateTime createdTime; 
-	private LocalDateTime modified_date;
-	
-	
+
 	@PrePersist
 	public void createdTime() {
 		this.createdTime = LocalDateTime.now();
 	}
+	
 }

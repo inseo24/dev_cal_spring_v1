@@ -12,6 +12,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +39,7 @@ public class ScrapEntity {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "event_id")
+	@JsonIgnoreProperties({"event_id"})
 	private EventEntity event;
 	
 	@ManyToOne(fetch = FetchType.EAGER)

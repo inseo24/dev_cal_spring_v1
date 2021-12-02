@@ -2,6 +2,10 @@ package com.example.ecommerce.controller;
 
 
 
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ecommerce.dto.CMResponseDTO;
+import com.example.ecommerce.dto.ResponseDTO;
+import com.example.ecommerce.dto.ScrapDTO;
+import com.example.ecommerce.model.ScrapEntity;
 import com.example.ecommerce.service.ScrapService;
 
 @RestController
@@ -38,9 +45,13 @@ public class ScrapController {
 	@GetMapping
 	public ResponseEntity<?> getScrap(@AuthenticationPrincipal String userId){
 		
-		service.retrieve(userId);
-
-		return new ResponseEntity<>(new CMResponseDTO<>(1, "스크랩 조회 성공", null), HttpStatus.OK);
+		List<ScrapEntity> entities = service.retrieve(userId);
+		
+		List<ScrapDTO> dtos = entities.stream().map(ScrapDTO::new).collect(Collectors.toList());
+		
+		ResponseDTO<ScrapDTO> response = ResponseDTO.<ScrapDTO>builder().data(dtos).build();
+		
+		return ResponseEntity.ok().body(response);
 	}
 
 }
