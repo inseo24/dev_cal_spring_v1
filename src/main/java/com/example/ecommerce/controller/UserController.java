@@ -37,7 +37,7 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private UserRepository userRepo;
 
@@ -45,90 +45,79 @@ public class UserController {
 	private TokenProvider tokenProvider;
 
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	
 
 	@PostMapping("/auth/signup")
 	public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-		
+
 		if (bindingResult.hasErrors()) {
 
 			Map<String, String> errorMap = new HashMap<>();
-			
+
 			for (FieldError error : bindingResult.getFieldErrors()) {
 				errorMap.put(error.getField(), error.getDefaultMessage());
 			}
-			
+
 			throw new CustomValidationException("유효성 검사 실패", errorMap);
 		} else {
-			
-			UserEntity user = UserEntity.builder()
-					.email(userDTO.getEmail())
-					.name(userDTO.getName())
-					.mobileNum(userDTO.getMobileNum())
-					.password(passwordEncoder.encode(userDTO.getPassword()))
-					.build();
 
-		UserEntity registeredUser = userService.create(user);
-		UserDTO responseUserDTO = UserDTO.builder()
-						.email(registeredUser.getEmail())
-						.userId(registeredUser.getUserId())
-						.name(registeredUser.getName())
-						.build();
-		
-		log.info("signup responseUserDTO : " + responseUserDTO);
-	
-		return ResponseEntity.ok(responseUserDTO);
+			UserEntity user = UserEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
+					.mobileNum(userDTO.getMobileNum()).password(passwordEncoder.encode(userDTO.getPassword())).build();
+
+			UserEntity registeredUser = userService.create(user);
+			UserDTO responseUserDTO = UserDTO.builder().email(registeredUser.getEmail())
+					.userId(registeredUser.getUserId()).name(registeredUser.getName()).build();
+
+			log.info("signup responseUserDTO : " + responseUserDTO);
+
+			return ResponseEntity.ok(responseUserDTO);
 		}
-		
-	
+
 	}
 
 	@PostMapping("/auth/signin")
 	public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
-		UserEntity user = userService.getByCredentials(
-						userDTO.getEmail(),
-						userDTO.getPassword(),
-						passwordEncoder);
+		UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
 
-		if(user != null) {
+		if (user != null) {
 			// 토큰 생성
 			final String token = tokenProvider.create(user);
-			final UserDTO responseUserDTO = UserDTO.builder()
-							.email(user.getEmail())
-							.mobileNum(user.getMobileNum())
-							.name(user.getName())
-							.userId(user.getUserId())
-							.token(token)
-							.build();
-			
+			final UserDTO responseUserDTO = UserDTO.builder().email(user.getEmail()).mobileNum(user.getMobileNum())
+					.name(user.getName()).userId(user.getUserId()).token(token).build();
+
 			log.info("signin responseUserDTO : " + responseUserDTO);
 
-			
 			return ResponseEntity.ok().body(responseUserDTO);
 		} else {
-			ResponseDTO responseDTO = ResponseDTO.builder()
-							.error("Login failed.")
-							.build();
-			return ResponseEntity
-							.badRequest()
-							.body(responseDTO);
+			ResponseDTO responseDTO = ResponseDTO.builder().error("Login failed.").build();
+			return ResponseEntity.badRequest().body(responseDTO);
 		}
 	}
-	
+
 	@PutMapping("/auth/update")
-	public CMResponseDTO<?> updatePassword(@AuthenticationPrincipal String userId, @RequestBody @Valid UserUpdateDTO userDTO){
+	public CMResponseDTO<?> updatePassword(@AuthenticationPrincipal String userId,
+			@RequestBody @Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
+
+		if (bindingResult.hasErrors()) {
+
+			Map<String, String> errorMap = new HashMap<>();
+
+			for (FieldError error : bindingResult.getFieldErrors()) {
+				errorMap.put(error.getField(), error.getDefaultMessage());
+			}
+
+			throw new CustomValidationException("유효성 검사 실패", errorMap);
 		
-		UserEntity user = userService.update(userId, userDTO.toEntity());
-		
-		log.info("user: " + user);
-		
-		userRepo.save(user);
-		
-		return new CMResponseDTO<>(1, "회원 정보 수정 완료", user);
-				
-	
+		} else {
+
+			UserEntity user = userService.update(userId, userDTO.toEntity());
+
+			log.info("user: " + user);
+
+			userRepo.save(user);
+
+			return new CMResponseDTO<>(1, "비밀번호가 수정되었습니다.", user);
+		}
+
 	}
-	
-	
-	
+
 }
