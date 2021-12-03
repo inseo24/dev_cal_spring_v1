@@ -26,6 +26,7 @@ public class BoardController {
 
 	@Autowired
 	public BoardService service;
+	
 
 	@PostMapping
 	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
