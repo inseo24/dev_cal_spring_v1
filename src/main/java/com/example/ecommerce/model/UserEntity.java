@@ -1,15 +1,10 @@
 package com.example.ecommerce.model;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -43,7 +38,6 @@ public class UserEntity {
 	@Column(nullable = false)
 	private String password;
 	
-	@Column(nullable = false)
 	private String mobileNum;
 	
 	@Column(nullable = false)

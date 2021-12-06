@@ -38,7 +38,7 @@ public class FileService {
 		UUID uuid = UUID.randomUUID();
 		
 		String imageFileName = uuid + "_" + fileDto.getFile().getOriginalFilename();	
-		log.info("이미지 파일이름: " + imageFileName);
+		log.info("imageFile " + imageFileName);
 		
 		log.info("fileDTO: " + fileDto);
 

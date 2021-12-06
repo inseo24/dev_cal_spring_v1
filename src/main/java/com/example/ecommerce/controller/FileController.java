@@ -29,9 +29,10 @@ public class FileController {
 		
 		log.info("fileDto: " + fileDto);
 		
+	
 		service.uploadImage(userId, fileDto);
 			    
-	    return new ResponseEntity<>("이미지 저장 성공", HttpStatus.OK);
+	    return new ResponseEntity<>("image ok", HttpStatus.OK);
 	}
 
 }

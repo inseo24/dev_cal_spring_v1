@@ -1,7 +1,6 @@
 package com.example.ecommerce.service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce.dto.CMResponseDTO;
 import com.example.ecommerce.model.BoardEntity;
 import com.example.ecommerce.persistence.BoardRepository;
 
@@ -59,11 +59,11 @@ public class BoardService {
 	}
 
 	// update
-	public List<BoardEntity> updateBoard(final BoardEntity entity){
+	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId){
 		validate(entity);
 		
 		// 넘겨받은 엔티티 id를 이용해 BoardEntity를 가져온다. 존재하지 않는 엔티티는 업데이트할 수 없으므로!
-		final Optional<BoardEntity> original = repo.findById(entity.getBoardId());
+		final Optional<BoardEntity> original = repo.findById(boardId);
 		
 		original.ifPresent(board -> {
 			// 반환된 엔티티가 존쟇면 값을 새 엔티티 값으로 덮어 씌움
@@ -80,23 +80,28 @@ public class BoardService {
 	}
 	
 	// delete
-	public List<BoardEntity> deleteBoard(final BoardEntity entity){
-		validate(entity);
+	public List<BoardEntity> deleteBoard(String boardId){
 		
 		try {
 			// 삭제
-			repo.delete(entity);
+			repo.deleteById(boardId);
 			
 		} catch(Exception e) {
 			// exception 발생 시 id와 exception을 로깅
-			log.error("error deleting entity", entity.getBoardId(), e);
+			log.error("error deleting entity", boardId, e);
 			
 			// 컨트롤러로 exception 보내기
 			// db 내부 로직을 캡슐화하기 위해 e를 리턴하지 않고 새 exception 오브젝트 리턴
-			throw new RuntimeException("error deleting entity" + entity.getBoardId());
+			throw new RuntimeException("error deleting entity" + boardId);
 		}
 		
 		// 새 list 반환
-		return retrieve(entity.getUserId());
+		return CMResponseDTO(1, "삭제 성공", null);
+	}
+
+
+	private List<BoardEntity> CMResponseDTO(int i, String string, Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

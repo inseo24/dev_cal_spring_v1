@@ -26,7 +26,6 @@ public class BoardController {
 
 	@Autowired
 	public BoardService service;
-	
 
 	@PostMapping
 	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
@@ -95,8 +94,8 @@ public class BoardController {
 	}
 
 
-	@PutMapping
-	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
+	@PutMapping("/{boardId}")
+	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto, @PathVariable String boardId) {
 		
 		// dto를 entity로 변환
 		BoardEntity entity = BoardDTO.toEntity(dto);
@@ -104,7 +103,7 @@ public class BoardController {
 		entity.setUserId(userId);
 
 		// 서비스를 이용해 entity를 업데이트
-		List<BoardEntity> entities = service.updateBoard(entity);
+		List<BoardEntity> entities = service.updateBoard(entity, boardId);
 
 		// 자바 스트림을 이용해 리턴된 엔티티 리스트를 BoardList로 변환
 		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
@@ -117,26 +116,15 @@ public class BoardController {
 
 	}
 
-	@DeleteMapping
-	public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
+	@DeleteMapping("/{boardId}")
+	public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @PathVariable String boardId) {
 		try {
 
-			// boardEntity로 변환
-			BoardEntity entity = BoardDTO.toEntity(dto);
+			service.deleteBoard(boardId);
 
-			entity.setUserId(userId);
-
-			// 서비스를 이용해 삭제
-			List<BoardEntity> entities = service.deleteBoard(entity);
-
-			// 자바 스트림을 이용해 리턴된 엔티티 리스트를 BoardList로 변환
-			List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
-
-			// 변환된 BoardDTO 리스트를 이용해 ResponseDTO를 초기화
-			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
-
-			// ResponseDTO 반환
-			return ResponseEntity.ok().body(response);
+			
+			return (ResponseEntity<?>) ResponseEntity.ok();
+			
 		} catch (Exception e) {
 			// 예외가 있는 경우 dto 대신 error에 메시지를 넣어 리턴
 			String error = e.getMessage();

@@ -15,11 +15,12 @@ spring:
     show-sql: true
     generate-ddl: true
     
- 
 file:
   path: C:/workspace/image/
   
   
-server:  mulipart:
+server:  
+  mulipart:
     enabled: true
     max-file-size: 2MB
+ 

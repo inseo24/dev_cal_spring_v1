@@ -7,15 +7,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,26 +26,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "Board")
-public class BoardEntity {
-	
-	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy="uuid")
-	private String boardId;
-	
-	private String userId;
-	private String title;
-	private String content;
-	private LocalDateTime createdTime; 
-	private LocalDateTime modified_date;
-	
-	@Lob
-	@Column(columnDefinition = "BLOB")
-	private String imgUrl;
-	
+@Table(name = "Comment")
+public class CommentEntity {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 	
+	@Column(length = 100, nullable = false)
+	private String comment;
+	
+	@JoinColumn(name = "userId")
+	@ManyToOne(fetch = FetchType.EAGER)
+	private UserEntity user;
+	
+	@JoinColumn(name = "boardId")
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties({"boardId"})
+	private BoardEntity board;
+	
+	private LocalDateTime createdTime;
 	
 	@PrePersist
 	public void createdTime() {

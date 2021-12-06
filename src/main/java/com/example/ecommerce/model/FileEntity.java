@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,17 +17,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Data
+@Entity
 @Table(name = "files")
 public class FileEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long fileId; 
+	private Long fileId;
 	
 	private String type;
+	
 	private String name;
+	
+	private String imgUrl;
 	
 	private String boardId;
 	

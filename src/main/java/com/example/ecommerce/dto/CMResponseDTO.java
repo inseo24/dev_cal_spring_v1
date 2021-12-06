@@ -1,7 +1,5 @@
 package com.example.ecommerce.dto;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
