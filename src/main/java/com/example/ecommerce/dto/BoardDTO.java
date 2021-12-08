@@ -22,6 +22,8 @@ public class BoardDTO {
 	private String userId;
 	private LocalDateTime createdTime;
 	private LocalDateTime modified_date;
+	private int boardNumber;
+
 	
 	@Lob
 	private String imgUrl;
@@ -33,12 +35,14 @@ public class BoardDTO {
 		this.userId = entity.getUserId();
 		this.createdTime = entity.getCreatedTime();
 		this.modified_date = entity.getModified_date();
+		this.boardNumber = entity.getBoardNumber();
 		this.imgUrl = entity.getImgUrl();
 	}
 	
 	public static BoardEntity toEntity(final BoardDTO dto) {
 		return BoardEntity.builder()
 				.boardId(dto.getBoardId())
+				.boardNumber(dto.getBoardNumber())
 				.title(dto.getTitle())
 				.userId(dto.getUserId())
 				.content(dto.getContent())

@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class UserUpdateDTO {
-
- 	
+	
+	private String name; 	
 	private String email;
 
 	@NotBlank(message="비밀번호가 공백입니다.")	
@@ -29,6 +29,7 @@ public class UserUpdateDTO {
 	
 	public UserEntity toEntity() {
 		return UserEntity.builder()
+				.name(name)
 				.email(email)
 				.modifiedTime(modifiedTime)
 				.password(password)

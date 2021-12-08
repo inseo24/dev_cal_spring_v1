@@ -61,7 +61,9 @@ public class UserService {
 		UserEntity userEntity = optUserEntity.get();
 		
 		log.info("user: " + userEntity);
+		log.info("userEntity: " + user);
 		
+		userEntity.setName(user.getName());
 		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
 		userEntity.setModifiedTime(LocalDateTime.now());
 

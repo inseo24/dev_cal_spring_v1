@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -16,6 +17,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +38,9 @@ public class BoardEntity {
 	@GenericGenerator(name="system-uuid", strategy="uuid")
 	private String boardId;
 	
+	@Column(columnDefinition = "INT(11) NOT NULL UNIQUE KEY auto_increment")
+	private int boardNumber;
+	
 	private String userId;
 	private String title;
 	private String content;
@@ -44,12 +50,11 @@ public class BoardEntity {
 	@Lob
 	@Column(columnDefinition = "BLOB")
 	private String imgUrl;
-	
-
-	
-	
+		
 	@PrePersist
 	public void createdTime() {
 		this.createdTime = LocalDateTime.now();
 	}
+	
+
 }

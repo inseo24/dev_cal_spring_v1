@@ -109,6 +109,8 @@ public class UserController {
 			throw new CustomValidationException("유효성 검사 실패", errorMap);
 		
 		} else {
+			
+			log.info("userDTO : " + userDTO);
 
 			UserEntity user = userService.update(userId, userDTO.toEntity());
 

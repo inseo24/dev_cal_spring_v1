@@ -37,7 +37,7 @@ public class CommentEntity {
 	private String comment;
 	
 	@JoinColumn(name = "userId")
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private UserEntity user;
 	
 	@JoinColumn(name = "boardId")
