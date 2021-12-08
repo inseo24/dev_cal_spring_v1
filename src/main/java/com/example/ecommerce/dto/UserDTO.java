@@ -23,7 +23,7 @@ public class UserDTO {
  	private String email;
 	
 	@NotBlank(message="이름이 공백입니다.")
-	@Size(min=2, max = 10, message = "이름은 2자 이상 10자 이하여야 합니다." )
+	@Size(min=2, max = 10, message = "이름은 1자 이상 4자 이하여야 합니다." )
 	private String name;
 	
 	@NotBlank(message="비밀번호가 공백입니다.")	

@@ -19,6 +19,7 @@ public class BoardDTO {
 	private String boardId;
 	private String title;
 	private String content;
+	private String userId;
 	private LocalDateTime createdTime;
 	private LocalDateTime modified_date;
 	
@@ -29,6 +30,7 @@ public class BoardDTO {
 		this.boardId = entity.getBoardId();
 		this.title = entity.getTitle();
 		this.content = entity.getContent();
+		this.userId = entity.getUserId();
 		this.createdTime = entity.getCreatedTime();
 		this.modified_date = entity.getModified_date();
 		this.imgUrl = entity.getImgUrl();
@@ -38,6 +40,7 @@ public class BoardDTO {
 		return BoardEntity.builder()
 				.boardId(dto.getBoardId())
 				.title(dto.getTitle())
+				.userId(dto.getUserId())
 				.content(dto.getContent())
 				.modified_date(dto.getModified_date())
 				.createdTime(dto.getCreatedTime())

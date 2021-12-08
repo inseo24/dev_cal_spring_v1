@@ -101,7 +101,6 @@ public class BoardService {
 
 
 	private List<BoardEntity> CMResponseDTO(int i, String string, Object object) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

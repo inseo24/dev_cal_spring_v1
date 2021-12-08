@@ -11,6 +11,7 @@ import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,8 @@ public class UserController {
 	private TokenProvider tokenProvider;
 
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	
+
 
 	@PostMapping("/auth/signup")
 	public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {

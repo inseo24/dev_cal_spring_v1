@@ -2,6 +2,8 @@ package com.example.ecommerce.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,11 @@ public class EventService {
 		log.info("Entity Id : {} is saved", entity.getEventId());
 		
 		return repo.findByEventId(entity.getEventId());
+	}
+	
+	@Transactional
+	public List<EventEntity> retrieve(String event){
+		return repo.findByTitleContains(event);
 	}
 		
 

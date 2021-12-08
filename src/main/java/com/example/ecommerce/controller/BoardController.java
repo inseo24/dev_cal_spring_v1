@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.ecommerce.dto.BoardDTO;
 import com.example.ecommerce.dto.ResponseDTO;
 import com.example.ecommerce.model.BoardEntity;
+import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.UserRepository;
 import com.example.ecommerce.service.BoardService;
 
 @RestController
@@ -26,6 +28,9 @@ public class BoardController {
 
 	@Autowired
 	public BoardService service;
+	
+	@Autowired
+	public UserRepository userRepo;
 
 	@PostMapping
 	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto) {
@@ -38,10 +43,10 @@ public class BoardController {
 
 			// id를 null로 초기화, 생성 당시에는 id가 없어야함
 			entity.setUserId(null);
-
-			// 사용자 아이디 설정
-			entity.setUserId(userId);
-
+			
+			UserEntity userEntity = userRepo.findByUserId(userId);
+			entity.setUserId(userEntity.getName());
+			
 			// 서비스를 이용해 Board 엔티티 생성
 			List<BoardEntity> entities = service.createBoard(entity);
 
