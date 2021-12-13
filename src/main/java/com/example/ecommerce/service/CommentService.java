@@ -11,6 +11,7 @@ import com.example.ecommerce.handler.ex.CustomApiException;
 import com.example.ecommerce.model.BoardEntity;
 import com.example.ecommerce.model.CommentEntity;
 import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.BoardRepository;
 import com.example.ecommerce.persistence.CommentRepository;
 import com.example.ecommerce.persistence.UserRepository;
 
@@ -24,19 +25,21 @@ public class CommentService {
 	@Autowired
 	private UserRepository userRepo;
 	
+	@Autowired
+	private BoardRepository boardRepo;
+	
 	
 	@Transactional
 	public CommentEntity create(String comment, String boardId, String userId) {
 				
-		BoardEntity board = new BoardEntity();
-		board.setBoardId(boardId);
+		BoardEntity boardEntity = boardRepo.getById(boardId);
 		
 		UserEntity user = userRepo.findById(userId).orElseThrow(() -> {
 			throw new CustomApiException("유저 아이디를 찾을 수가 없습니다.");
 		});
 
 		CommentEntity entity = new CommentEntity();
-		entity.setBoard(board);
+		entity.setBoard(boardEntity);
 		entity.setUser(user);
 		entity.setComment(comment);
 		

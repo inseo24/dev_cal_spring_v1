@@ -1,16 +1,27 @@
 package com.example.ecommerce.service;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.dto.CMResponseDTO;
+import com.example.ecommerce.dto.ImageDTO;
 import com.example.ecommerce.model.BoardEntity;
+import com.example.ecommerce.model.ImageEntity;
+import com.example.ecommerce.model.UserEntity;
 import com.example.ecommerce.persistence.BoardRepository;
+import com.example.ecommerce.persistence.ImageRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +31,12 @@ public class BoardService {
 
 	@Autowired
 	private BoardRepository repo;
-
+	
+	@Autowired
+	private ImageRepository imgrepo;
+	
+	@Value("${file.path}")
+	private String uploadFolder;
 
 	private void validate(final BoardEntity entity) {
 		// validation
@@ -37,19 +53,54 @@ public class BoardService {
 	
 	
 	// create
+	public List<BoardEntity> createBoard(final BoardEntity entity, ImageDTO imageDTO) {
+		
+		validate(entity);
+		
+		repo.save(entity);
+		
+		UUID uuid = UUID.randomUUID();
+		
+		String imageFileName = uuid + "_" + imageDTO.getFile().getOriginalFilename();
+		Path imageFilePath = Paths.get(uploadFolder + imageFileName);
+		
+		try {
+			if (imageDTO.getFile().isEmpty()) {
+				throw new Exception("Error: file is empty");
+			}
+			if (!Files.exists(imageFilePath)) {
+				Files.write(imageFilePath, imageDTO.getFile().getBytes());
+			}
+			
+			try (InputStream inputStream = imageDTO.getFile().getInputStream()){
+				Files.copy(inputStream, imageFilePath.resolve(imageDTO.getFile().getOriginalFilename()),
+														StandardCopyOption.REPLACE_EXISTING);	
+			}
+			
+		} catch (Exception e) {
+			
+		}
+		
+		String type = imageDTO.getFile().getContentType();
+		
+		String boardId = entity.getBoardId();
+		ImageEntity image = imageDTO.toEntity(type, imageFileName, boardId);
+		imgrepo.save(image);		
+
+		return repo.findByBoardId(entity.getBoardId());
+	}
+	
 	public List<BoardEntity> createBoard(final BoardEntity entity) {
 		
 		validate(entity);
 		
 		repo.save(entity);
 
-		log.info("Entity Id : {} is saved", entity.getUserId());
-
 		return repo.findByBoardId(entity.getBoardId());
 	}
 	
 	// retrieve
-	public List<BoardEntity> retrieve(final String boardId){
+	public List<BoardEntity> retrieve(){
 		return repo.findAll(Sort.by("boardId").descending());
 	}
 	
@@ -76,7 +127,7 @@ public class BoardService {
 		});
 		
 		// retrieve 메서드를 이용해 사용자의 모든 리스트를 리턴
-		return retrieve(entity.getUserId());
+		return retrieve();
 	}
 	
 	// delete
@@ -84,6 +135,7 @@ public class BoardService {
 		
 		try {
 			// 삭제
+			
 			repo.deleteById(boardId);
 			
 		} catch(Exception e) {
