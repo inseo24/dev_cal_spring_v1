@@ -16,14 +16,17 @@ import lombok.NoArgsConstructor;
 public class CommentDTO {
 	private String comment;
 	private String boardId;
+	private int id;
 	
 	public CommentDTO(final CommentEntity entity) {
 		this.boardId = entity.getBoard().getBoardId();
+		this.id = entity.getId();
 		this.comment= entity.getComment();
 	}
 	
 	public static CommentEntity toEntity(final CommentDTO dto) {
 		return CommentEntity.builder()
+				.id(dto.getId())
 				.comment(dto.getComment())
 				.build();
 	}

@@ -1,12 +1,14 @@
 package com.example.ecommerce.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.ecommerce.dto.CommentDTO;
 import com.example.ecommerce.handler.ex.CustomApiException;
 import com.example.ecommerce.model.BoardEntity;
 import com.example.ecommerce.model.CommentEntity;
@@ -50,10 +52,37 @@ public class CommentService {
 	public List<CommentEntity> retrieve(final String boardId) {
 		return commentRepo.retrieveComment(boardId);
 	}
+	
+	@Transactional
+	public List<CommentEntity> retrieve() {
+		return commentRepo.findAll();
+	}
 
 	@Transactional
-	public CommentEntity delete() {
-		return null;
+	public void delete(int id, String userId) {
+		
+		commentRepo.delete(id, userId);
+		return;
+	}
+	
+	@Transactional
+	public List<CommentEntity> update(CommentDTO commentDTO, String userId, Integer id) {
+		
+		UserEntity user = userRepo.findById(userId).orElseThrow(() -> {
+			throw new CustomApiException("유저 아이디를 찾을 수가 없습니다.");
+		});
+		
+		String commentContent = commentDTO.getComment();
+		
+		final Optional<CommentEntity> original = commentRepo.findById(id);
+
+		original.ifPresent(comment -> {
+			comment.setComment(commentContent);
+			
+			commentRepo.save(comment);
+		});
+		
+		return retrieve();
 	}
 	
 
