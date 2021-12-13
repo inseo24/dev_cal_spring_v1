@@ -76,8 +76,7 @@ public class BoardController {
 	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId, @RequestPart(value="data", required = false) BoardDTO dto) {
 		
 		try {
-			
-			
+
 			// BoardEntity로 변환
 			BoardEntity entity = BoardDTO.toEntity(dto);
 			
@@ -141,8 +140,32 @@ public class BoardController {
 	}
 
 
+	@PutMapping("/{boardId}/image")
+	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, ImageDTO imageDTO, @RequestPart(value="data", required = false) BoardDTO dto, @PathVariable String boardId) {
+		
+		// dto를 entity로 변환
+		BoardEntity entity = BoardDTO.toEntity(dto);
+		
+		UserEntity userEntity = userRepo.findByUserId(userId);
+
+		entity.setUserId(userEntity);
+
+		// 서비스를 이용해 entity를 업데이트
+		List<BoardEntity> entities = service.updateBoard(entity, boardId, imageDTO);
+
+		// 자바 스트림을 이용해 리턴된 엔티티 리스트를 BoardList로 변환
+		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
+
+		// 변환된 BoardDTO 리스트를 이용해 ResponseDTO를 초기화
+		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
+
+		// ResponseDTO 반환
+		return ResponseEntity.ok().body(response);
+
+	}
+	
 	@PutMapping("/{boardId}")
-	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, @RequestBody BoardDTO dto, @PathVariable String boardId) {
+	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, @RequestPart(value="data", required = false) BoardDTO dto, @PathVariable String boardId) {
 		
 		// dto를 entity로 변환
 		BoardEntity entity = BoardDTO.toEntity(dto);

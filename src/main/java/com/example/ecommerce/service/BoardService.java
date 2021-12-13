@@ -52,7 +52,7 @@ public class BoardService {
 	}
 	
 	
-	// create
+	// create with image
 	public List<BoardEntity> createBoard(final BoardEntity entity, ImageDTO imageDTO) {
 		
 		validate(entity);
@@ -90,6 +90,7 @@ public class BoardService {
 		return repo.findByBoardId(entity.getBoardId());
 	}
 	
+	// board create without img
 	public List<BoardEntity> createBoard(final BoardEntity entity) {
 		
 		validate(entity);
@@ -111,6 +112,7 @@ public class BoardService {
 
 	// update
 	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId){
+		
 		validate(entity);
 		
 		// 넘겨받은 엔티티 id를 이용해 BoardEntity를 가져온다. 존재하지 않는 엔티티는 업데이트할 수 없으므로!
@@ -118,6 +120,62 @@ public class BoardService {
 		
 		original.ifPresent(board -> {
 			// 반환된 엔티티가 존쟇면 값을 새 엔티티 값으로 덮어 씌움
+			board.setTitle(entity.getTitle());
+			board.setContent(entity.getContent());
+			board.setModified_date(LocalDateTime.now());
+		
+			// db에 새로운 값을 저장
+			repo.save(board);
+		});
+		
+		// retrieve 메서드를 이용해 사용자의 모든 리스트를 리턴
+		return retrieve();
+	}
+	
+	// update
+	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId, ImageDTO imageDTO){
+		
+		validate(entity);
+		
+		// 넘겨받은 엔티티 id를 이용해 BoardEntity를 가져온다. 존재하지 않는 엔티티는 업데이트할 수 없으므로!
+		final Optional<BoardEntity> original = repo.findById(boardId);
+		
+		final Optional<ImageEntity> img = imgrepo.findByBoardId(boardId);
+		
+		System.out.println("img :" + img);
+		
+		UUID uuid = UUID.randomUUID();
+		String imageFileName = uuid + "_" + imageDTO.getFile().getOriginalFilename();	
+		Path imageFilePath = Paths.get(uploadFolder + imageFileName);
+		
+		try {
+			if (imageDTO.getFile().isEmpty()) {
+				throw new Exception("Error: file is empty");
+			}
+			if (!Files.exists(imageFilePath)) {
+				Files.write(imageFilePath, imageDTO.getFile().getBytes());
+			}
+			
+			try (InputStream inputStream = imageDTO.getFile().getInputStream()){
+				Files.copy(inputStream, imageFilePath.resolve(imageDTO.getFile().getOriginalFilename()),
+														StandardCopyOption.REPLACE_EXISTING);	
+			}
+			
+		} catch (Exception e) {
+			
+		}
+		
+		String type = imageDTO.getFile().getContentType();
+		
+		img.ifPresent(image -> {
+			image.setName(imageFileName);
+			image.setType(type);
+			
+			imgrepo.save(image);
+		});
+		
+		original.ifPresent(board -> {
+			// 반환된 엔티티가 존재하면 값을 새 엔티티 값으로 덮어 씌움
 			board.setTitle(entity.getTitle());
 			board.setContent(entity.getContent());
 			board.setModified_date(LocalDateTime.now());
