@@ -45,10 +45,8 @@ public class BoardController {
 			BoardEntity entity = BoardDTO.toEntity(dto);
 			
 			UserEntity userEntity = userRepo.findByUserId(userId);
-			System.out.println(userEntity);
 			entity.setUserId(userEntity);
-			
-			
+						
 			// 서비스를 이용해 Board 엔티티 생성
 			List<BoardEntity> entities = service.createBoard(entity, imageDTO);
 

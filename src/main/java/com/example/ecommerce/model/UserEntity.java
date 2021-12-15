@@ -11,6 +11,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,6 +38,7 @@ public class UserEntity {
 	private String email;
 	
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
 	
 	private String mobileNum;

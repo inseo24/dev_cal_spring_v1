@@ -110,7 +110,7 @@ public class BoardService {
 		return repo.findByBoardId(boardId);
 	}
 
-	// update
+	// update without image
 	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId){
 		
 		validate(entity);
@@ -132,7 +132,7 @@ public class BoardService {
 		return retrieve();
 	}
 	
-	// update
+	// update with image
 	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId, ImageDTO imageDTO){
 		
 		validate(entity);
@@ -140,9 +140,10 @@ public class BoardService {
 		// 넘겨받은 엔티티 id를 이용해 BoardEntity를 가져온다. 존재하지 않는 엔티티는 업데이트할 수 없으므로!
 		final Optional<BoardEntity> original = repo.findById(boardId);
 		
-		final Optional<ImageEntity> img = imgrepo.findByBoardId(boardId);
+		ImageEntity img = imgrepo.findByBoardId(boardId);
 		
-		System.out.println("img :" + img);
+		
+		
 		
 		UUID uuid = UUID.randomUUID();
 		String imageFileName = uuid + "_" + imageDTO.getFile().getOriginalFilename();	
@@ -167,12 +168,24 @@ public class BoardService {
 		
 		String type = imageDTO.getFile().getContentType();
 		
-		img.ifPresent(image -> {
+		
+		if (img == null) {
+			ImageEntity image = new ImageEntity();
+			image.setBoardId(boardId);
 			image.setName(imageFileName);
 			image.setType(type);
-			
 			imgrepo.save(image);
-		});
+			
+		} else {
+		
+			img.setName(imageFileName);
+			img.setType(type);
+			
+			imgrepo.save(img);
+			
+			
+		}
+		
 		
 		original.ifPresent(board -> {
 			// 반환된 엔티티가 존재하면 값을 새 엔티티 값으로 덮어 씌움
