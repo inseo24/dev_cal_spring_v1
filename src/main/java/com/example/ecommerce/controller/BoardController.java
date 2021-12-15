@@ -36,7 +36,7 @@ public class BoardController {
 	public UserRepository userRepo;
 
 	@PostMapping("/image")
-	public ResponseEntity<?> createBoardImg(@AuthenticationPrincipal String userId, ImageDTO imageDTO, @RequestPart(value="data", required = false) BoardDTO dto) {
+	public ResponseEntity<?> createBoardImg(@AuthenticationPrincipal String userId, ImageDTO imageDTO, @RequestPart(value="data", required = false) BoardDTO dto, @RequestPart(value="imgUrl", required = false) String imgUrl) {
 		
 		
 		try {
@@ -45,12 +45,10 @@ public class BoardController {
 			BoardEntity entity = BoardDTO.toEntity(dto);
 			
 			UserEntity userEntity = userRepo.findByUserId(userId);
-			System.out.println(userEntity);
 			entity.setUserId(userEntity);
 			
-			
 			// 서비스를 이용해 Board 엔티티 생성
-			List<BoardEntity> entities = service.createBoard(entity, imageDTO);
+			List<BoardEntity> entities = service.createBoard(entity, imageDTO, imgUrl);
 
 			// 자바 스트림을 이용해 리턴된 엔티티 리스트를 BoardDTO 리스트로 반환
 			List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
