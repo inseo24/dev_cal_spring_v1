@@ -53,7 +53,7 @@ public class BoardService {
 	
 	
 	// create with image
-	public List<BoardEntity> createBoard(final BoardEntity entity, ImageDTO imageDTO, String imgUrl) {
+	public List<BoardEntity> createBoard(final BoardEntity entity, ImageDTO imageDTO) {
 		
 		validate(entity);
 		
@@ -84,7 +84,7 @@ public class BoardService {
 		String type = imageDTO.getFile().getContentType();
 		
 		String boardId = entity.getBoardId();
-		ImageEntity image = imageDTO.toEntity(type, imageFileName, boardId, imgUrl);
+		ImageEntity image = imageDTO.toEntity(type, imageFileName, boardId);
 		imgrepo.save(image);		
 
 		return repo.findByBoardId(entity.getBoardId());

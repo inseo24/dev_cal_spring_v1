@@ -20,11 +20,10 @@ public class ImageDTO {
 	private String boardId;	
 	
 	
-	public static ImageEntity toEntity(String type, String name, String boardId, String imgUrl) {
+	public static ImageEntity toEntity(String type, String name, String boardId) {
 		return ImageEntity.builder()
 				.name(name)
 				.type(type)
-				.imgUrl(imgUrl)
 				.boardId(boardId)
 				.build();
 	}

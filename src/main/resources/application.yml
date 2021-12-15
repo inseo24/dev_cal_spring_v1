@@ -17,7 +17,7 @@ spring:
     generate-ddl: true
     
 file:
-  path: C:/workspace/image/
+  path: C:/ecommerce/react/public/image/
   
   
 server:  
