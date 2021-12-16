@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.ecommerce.model.UserEntity;
 import com.example.ecommerce.persistence.UserRepository;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class UserService {
 	
@@ -32,7 +30,6 @@ public class UserService {
 		final String email = userEntity.getEmail();
 		
 		if (userRepo.existsByEmail(email)) {
-			log.warn("Email already exists {}", email);
 			throw new RuntimeException("Email already exists");
 		}
 		
@@ -45,7 +42,6 @@ public class UserService {
 		
 		final UserEntity originalUser = userRepo.findByEmail(email);
 
-		// matches 메서드를 이용해 패스워드가 같은지 확인
 		if(originalUser != null && encoder.matches(password, originalUser.getPassword())) {
 			return originalUser;
 		}
@@ -59,9 +55,6 @@ public class UserService {
 		final Optional<UserEntity> optUserEntity = userRepo.findById(userId);
 		
 		UserEntity userEntity = optUserEntity.get();
-		
-		log.info("user: " + userEntity);
-		log.info("userEntity: " + user);
 		
 		userEntity.setName(user.getName());
 		userEntity.setPassword(passwordEncoder.encode(user.getPassword()));

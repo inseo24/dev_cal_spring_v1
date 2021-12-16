@@ -2,7 +2,6 @@ package com.example.ecommerce.controller;
 
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,7 @@ import com.example.ecommerce.dto.ResponseDTO;
 import com.example.ecommerce.model.CommentEntity;
 import com.example.ecommerce.service.CommentService;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequestMapping("comment")
 public class CommentController {
@@ -59,7 +56,6 @@ public class CommentController {
 	
 	@PostMapping
 	public ResponseEntity<?> commentSave(@AuthenticationPrincipal String userId, @RequestBody CommentDTO commentDTO) {
-		log.info("commentdto : " + commentDTO);
 		String comment = commentDTO.getComment();
 		String boardId = commentDTO.getBoardId();
 		
@@ -79,7 +75,6 @@ public class CommentController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteComment(@AuthenticationPrincipal String userId, @PathVariable int id) {
-		log.info("userId:  " + userId);
 		
 		service.delete(id, userId);
 		return new ResponseEntity<> (new CMResponseDTO<>(1, "comment delete success", null), HttpStatus.OK);

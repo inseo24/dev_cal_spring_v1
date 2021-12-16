@@ -3,8 +3,6 @@ package com.example.ecommerce.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Lob;
-
 import com.example.ecommerce.model.BoardEntity;
 import com.example.ecommerce.model.CommentEntity;
 import com.example.ecommerce.model.ImageEntity;

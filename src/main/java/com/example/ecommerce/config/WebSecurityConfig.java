@@ -1,7 +1,6 @@
 package com.example.ecommerce.config;
 
 import com.example.ecommerce.security.JwtAuthenticationFilter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,7 +9,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
-@Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired

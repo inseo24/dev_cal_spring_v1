@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.ecommerce.model.EventEntity;
 import com.example.ecommerce.persistence.EventRepository;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class EventService {
 
@@ -28,8 +26,6 @@ public class EventService {
 	
 		repo.save(entity);
 
-		log.info("Entity Id : {} is saved", entity.getEventId());
-		
 		return repo.findByEventId(entity.getEventId());
 	}
 	

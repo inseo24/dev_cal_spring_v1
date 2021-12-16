@@ -11,7 +11,6 @@ import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,13 +23,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
 public class UserController {
 
@@ -68,7 +65,6 @@ public class UserController {
 			UserDTO responseUserDTO = UserDTO.builder().email(registeredUser.getEmail())
 					.userId(registeredUser.getUserId()).name(registeredUser.getName()).build();
 
-			log.info("signup responseUserDTO : " + responseUserDTO);
 
 			return ResponseEntity.ok(responseUserDTO);
 		}
@@ -80,12 +76,10 @@ public class UserController {
 		UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
 
 		if (user != null) {
-			// 토큰 생성
 			final String token = tokenProvider.create(user);
 			final UserDTO responseUserDTO = UserDTO.builder().email(user.getEmail()).mobileNum(user.getMobileNum())
 					.name(user.getName()).userId(user.getUserId()).token(token).build();
 
-			log.info("signin responseUserDTO : " + responseUserDTO);
 
 			return ResponseEntity.ok().body(responseUserDTO);
 		} else {
@@ -110,11 +104,7 @@ public class UserController {
 		
 		} else {
 			
-			log.info("userDTO : " + userDTO);
-
 			UserEntity user = userService.update(userId, userDTO.toEntity());
-
-			log.info("user: " + user);
 
 			userRepo.save(user);
 

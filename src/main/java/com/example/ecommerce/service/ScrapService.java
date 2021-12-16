@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.ecommerce.model.ScrapEntity;
 import com.example.ecommerce.persistence.ScrapRepository;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 public class ScrapService {
 	
@@ -33,7 +31,6 @@ public class ScrapService {
 	@Transactional
 	public List<ScrapEntity> retrieve(String userId) {
 		
-		log.info("userId : " + userId);
 		
 		return scrapRepository.retrieveScrap(userId);
 	}
