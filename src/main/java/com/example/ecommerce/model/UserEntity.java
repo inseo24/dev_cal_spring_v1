@@ -9,6 +9,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.example.ecommerce.dto.UserUpdateDTO;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -52,5 +53,9 @@ public class UserEntity {
 	public void createdTime() {
 		this.createdTime = LocalDateTime.now();
 	}
-	
+
+
+	public void updatePassword(String password) {
+		this.password = password;
+	}
 }

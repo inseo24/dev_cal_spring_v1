@@ -1,6 +1,5 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.CMResponseDTO;
 import com.example.ecommerce.dto.ResponseDTO;
 import com.example.ecommerce.dto.UserDTO;
 import com.example.ecommerce.dto.UserUpdateDTO;
@@ -15,7 +14,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,88 +28,78 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+    private final UserService userService;
+    private final TokenProvider tokenProvider;
 
-	@Autowired
-	private UserRepository userRepo;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	@Autowired
-	private TokenProvider tokenProvider;
+    @PostMapping("/auth/signup")
+    public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
 
-	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-	
+        if (bindingResult.hasErrors()) {
 
+            Map<String, String> errorMap = new HashMap<>();
 
-	@PostMapping("/auth/signup")
-	public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
 
-		if (bindingResult.hasErrors()) {
+            throw new CustomValidationException("ï¿½ï¿½È¿ï¿½ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½", errorMap);
+        } else {
 
-			Map<String, String> errorMap = new HashMap<>();
+            UserEntity user = UserEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
+                    .mobileNum(userDTO.getMobileNum()).password(passwordEncoder.encode(userDTO.getPassword())).build();
 
-			for (FieldError error : bindingResult.getFieldErrors()) {
-				errorMap.put(error.getField(), error.getDefaultMessage());
-			}
-
-			throw new CustomValidationException("À¯È¿¼º °Ë»ç ½ÇÆÐ", errorMap);
-		} else {
-
-			UserEntity user = UserEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
-					.mobileNum(userDTO.getMobileNum()).password(passwordEncoder.encode(userDTO.getPassword())).build();
-
-			UserEntity registeredUser = userService.create(user);
-			UserDTO responseUserDTO = UserDTO.builder().email(registeredUser.getEmail())
-					.userId(registeredUser.getUserId()).name(registeredUser.getName()).build();
+            UserEntity registeredUser = userService.create(user);
+            UserDTO responseUserDTO = UserDTO.builder().email(registeredUser.getEmail())
+                    .userId(registeredUser.getUserId()).name(registeredUser.getName()).build();
 
 
-			return ResponseEntity.ok(responseUserDTO);
-		}
+            return ResponseEntity.ok(responseUserDTO);
+        }
 
-	}
+    }
 
-	@PostMapping("/auth/signin")
-	public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
-		UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
+    @PostMapping("/auth/signin")
+    public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
+        UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
 
-		if (user != null) {
-			final String token = tokenProvider.create(user);
-			final UserDTO responseUserDTO = UserDTO.builder().email(user.getEmail()).mobileNum(user.getMobileNum())
-					.name(user.getName()).userId(user.getUserId()).token(token).build();
+        if (user != null) {
+            final String token = tokenProvider.create(user);
+            final UserDTO responseUserDTO = UserDTO.builder().email(user.getEmail()).mobileNum(user.getMobileNum())
+                    .name(user.getName()).userId(user.getUserId()).token(token).build();
 
 
-			return ResponseEntity.ok().body(responseUserDTO);
-		} else {
-			ResponseDTO responseDTO = ResponseDTO.builder().error("Login failed.").build();
-			return ResponseEntity.badRequest().body(responseDTO);
-		}
-	}
+            return ResponseEntity.ok().body(responseUserDTO);
+        } else {
+            ResponseDTO responseDTO = ResponseDTO.builder().error("Login failed.").build();
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 
-	@PutMapping("/auth/update")
-	public CMResponseDTO<?> updatePassword(@AuthenticationPrincipal String userId,
-			@RequestBody @Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
+    @PutMapping("/auth/update")
+    public ResponseEntity<HttpStatus> updatePassword(@AuthenticationPrincipal String userId,
+                                           @RequestBody @Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
 
-		if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
 
-			Map<String, String> errorMap = new HashMap<>();
+            Map<String, String> errorMap = new HashMap<>();
 
-			for (FieldError error : bindingResult.getFieldErrors()) {
-				errorMap.put(error.getField(), error.getDefaultMessage());
-			}
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
 
-			throw new CustomValidationException("À¯È¿¼º °Ë»ç ½ÇÆÐ", errorMap);
-		
-		} else {
-			
-			UserEntity user = userService.update(userId, userDTO.toEntity());
+            throw new CustomValidationException("ï¿½ï¿½È¿ï¿½ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½", errorMap);
 
-			userRepo.save(user);
+        } else {
 
-			return new CMResponseDTO<>(1, "ºñ¹Ð¹øÈ£°¡ ¼öÁ¤µÇ¾ú½À´Ï´Ù.", user);
-		}
+            userService.updatePassword(userId, userDTO);
+            return ResponseEntity.ok(HttpStatus.OK);
+        }
 
-	}
+    }
 
 }
