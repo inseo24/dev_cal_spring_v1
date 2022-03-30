@@ -1,6 +1,6 @@
 package com.example.ecommerce.service;
 
-import com.example.ecommerce.dto.UserUpdateDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,43 +11,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-	private UserRepository userRepository;
-
-	public UserService(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+	private final UserRepository userRepository;
 
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	public UserEntity create(final UserEntity userEntity) {
-		
-		
-		if (userEntity == null || userEntity.getEmail() == null ) {
-			throw new RuntimeException("Invalid arguments");
-		}
-		
-		final String email = userEntity.getEmail();
-		
-		if (userRepository.existsByEmail(email)) {
-			throw new RuntimeException("Email already exists");
-		}
-		
-		
+		verifyUniqueEmail(userEntity.getEmail());
 		return userRepository.save(userEntity);
 	}
-	
-	
-	public UserEntity getByCredentials(final String email, final String password, final PasswordEncoder encoder) {
-		
-		final UserEntity originalUser = userRepository.findByEmail(email);
 
-		if(originalUser != null && encoder.matches(password, originalUser.getPassword())) {
-			return originalUser;
-		}
-		
-		return null;
+	public UserEntity getByCredentials(final String email, final String password, final PasswordEncoder encoder) {
+		final UserEntity originalUser = userRepository.findByEmail(email).orElseThrow();
+		isPasswordMatches(password, encoder, originalUser);
+		return originalUser;
 	}
 
 	@Transactional
@@ -55,6 +34,16 @@ public class UserService {
 		final UserEntity userEntity = userRepository.findById(userId).get();
 		userEntity.updatePassword(password);
 		userRepository.save(userEntity);
+	}
+
+	private void isPasswordMatches(String password, PasswordEncoder encoder, UserEntity originalUser) {
+		if (!encoder.matches(password, originalUser.getPassword())) {
+			throw new RuntimeException("user password not match");
+		}
+	}
+
+	private void verifyUniqueEmail(String email) {
+		if (userRepository.existsByEmail(email)) throw new RuntimeException("Email already exists");
 	}
 
 }
