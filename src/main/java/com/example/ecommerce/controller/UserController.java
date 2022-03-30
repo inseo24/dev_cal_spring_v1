@@ -1,6 +1,5 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.ResponseDTO;
 import com.example.ecommerce.dto.UserDTO;
 import com.example.ecommerce.dto.UserUpdateDTO;
 import com.example.ecommerce.model.UserEntity;
