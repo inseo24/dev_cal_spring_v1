@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @PostMapping("/auth/signin")
-    public ResponseEntity<?> authenticate(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> authenticate(@RequestBody @Valid UserDTO userDTO) {
         UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
 
         if (user != null) {
@@ -82,24 +82,9 @@ public class UserController {
 
     @PutMapping("/auth/update")
     public ResponseEntity<HttpStatus> updatePassword(@AuthenticationPrincipal String userId,
-                                           @RequestBody @Valid UserUpdateDTO userDTO, BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-
-            Map<String, String> errorMap = new HashMap<>();
-
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errorMap.put(error.getField(), error.getDefaultMessage());
-            }
-
-            throw new CustomValidationException("��ȿ�� �˻� ����", errorMap);
-
-        } else {
-
-            userService.updatePassword(userId, userDTO);
+                                                     @RequestBody @Valid UserUpdateDTO userDTO) {
+            userService.updatePassword(userId, userDTO.getPassword());
             return ResponseEntity.ok(HttpStatus.OK);
-        }
-
     }
 
 }
