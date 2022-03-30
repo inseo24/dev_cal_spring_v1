@@ -51,9 +51,9 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updatePassword(final String userId, final UserUpdateDTO userUpdateDto) {
+	public void updatePassword(final String userId, final String password) {
 		final UserEntity userEntity = userRepository.findById(userId).get();
-		userEntity.updatePassword(userUpdateDto.getPassword());
+		userEntity.updatePassword(password);
 		userRepository.save(userEntity);
 	}
 
