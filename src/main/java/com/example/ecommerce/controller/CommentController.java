@@ -63,7 +63,7 @@ public class CommentController {
     public ResponseEntity<?> update(@AuthenticationPrincipal String userId,
 										   @RequestBody CommentDTO commentDTO,
 										   @PathVariable int id) {
-        service.update(commentDTO, id);
+        service.update(commentDTO.getComment(), id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

@@ -56,9 +56,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(CommentDTO commentDTO, Integer id) {
-        final CommentEntity comment = commentRepository.findById(id).orElseThrow();
-        comment.update(commentDTO.getComment());
+    public void update(String comment, Integer id) {
+        commentRepository.findById(id).orElseThrow();
+        comment.update(comment);
     }
 
 
