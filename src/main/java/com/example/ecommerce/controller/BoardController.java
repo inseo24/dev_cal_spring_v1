@@ -6,14 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.ecommerce.dto.BoardDTO;
 import com.example.ecommerce.dto.ImageDTO;
@@ -24,7 +17,7 @@ import com.example.ecommerce.persistence.UserRepository;
 import com.example.ecommerce.service.BoardService;
 
 @RestController
-@RequestMapping("board")
+@RequestMapping("/board")
 public class BoardController {
 
 	@Autowired
@@ -64,23 +57,16 @@ public class BoardController {
 
 	@PostMapping
 	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId,
-			@RequestPart(value = "data", required = false) BoardDTO dto) {
+			@RequestBody BoardDTO dto) {
 
 		try {
-
-			BoardEntity entity = BoardDTO.toEntity(dto);
-
 			UserEntity userEntity = userRepo.findByUserId(userId);
-			System.out.println(userEntity);
+			BoardEntity entity = BoardDTO.toEntity(dto);
 			entity.setUserId(userEntity);
 
-			List<BoardEntity> entities = service.createBoard(entity);
+			BoardEntity savedEntity = service.create(entity);
 
-			List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
-
-			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
-
-			return ResponseEntity.ok().body(response);
+			return ResponseEntity.ok().body(savedEntity);
 
 		} catch (Exception e) {
 

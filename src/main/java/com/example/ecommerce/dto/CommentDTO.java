@@ -16,22 +16,12 @@ public class CommentDTO {
 	private String comment;
 	private String boardId;
 	private int id;
-	private UserEntity userId;
+	private String userId;
 	
 	public CommentDTO(final CommentEntity entity) {
-		this.boardId = entity.getBoard().getBoardId();
-		this.userId = entity.getUser();
+		this.boardId = entity.getBoardId();
+		this.userId = entity.getUserId();
 		this.id = entity.getId();
 		this.comment= entity.getComment();
 	}
-	
-	public static CommentEntity toEntity(final CommentDTO dto) {
-		return CommentEntity.builder()
-				.id(dto.getId())
-				.user(dto.getUserId())
-				.comment(dto.getComment())
-				.build();
-	}
-	
-	
 }

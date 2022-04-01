@@ -82,13 +82,13 @@ public class BoardService {
 		return repo.findByBoardId(entity.getBoardId());
 	}
 	
-	public List<BoardEntity> createBoard(final BoardEntity entity) {
+	public BoardEntity create(final BoardEntity entity) {
 		
 		validate(entity);
 		
-		repo.save(entity);
+		BoardEntity savedEntity = repo.save(entity);
 
-		return repo.findByBoardId(entity.getBoardId());
+		return savedEntity;
 	}
 	
 	public List<BoardEntity> retrieve(){
@@ -187,7 +187,7 @@ public class BoardService {
 			throw new RuntimeException("error deleting entity" + boardId);
 		}
 		
-		return CMResponseDTO(1, "삭제 성공", null);
+		return CMResponseDTO(1, "error", null);
 	}
 
 

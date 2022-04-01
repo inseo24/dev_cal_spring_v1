@@ -27,56 +27,49 @@ import com.example.ecommerce.service.CommentService;
 @RestController
 @RequestMapping("comment")
 public class CommentController {
-	
-	@Autowired
-	public CommentService service;
-	
-	@GetMapping
-	public ResponseEntity<?> retrieve(){
-		List<CommentEntity> entities = service.retrieve();
-		
-		List<CommentDTO> dtos = entities.stream().map(CommentDTO::new).collect(Collectors.toList());
-		
-		ResponseDTO<CommentDTO> response = ResponseDTO.<CommentDTO>builder().data(dtos).build();
-		
-		return ResponseEntity.ok().body(response);
-	}
-	
-	@GetMapping("/{boardId}")
-	public ResponseEntity<?> retrieveComment(@PathVariable String boardId){
-		List<CommentEntity> entities = service.retrieve(boardId);
-		
-		List<CommentDTO> dtos = entities.stream().map(CommentDTO::new).collect(Collectors.toList());
-		
-		ResponseDTO<CommentDTO> response = ResponseDTO.<CommentDTO>builder().data(dtos).build();
-		
-		return ResponseEntity.ok().body(response);
-	}
-	
-	
-	@PostMapping
-	public ResponseEntity<?> commentSave(@AuthenticationPrincipal String userId, @RequestBody CommentDTO commentDTO) {
-		String comment = commentDTO.getComment();
-		String boardId = commentDTO.getBoardId();
-		
-		
-		CommentEntity commentEntity = service.create(comment, boardId, userId);
-		
-		return new ResponseEntity<> (new CMResponseDTO<>(1, "comment success", commentEntity), HttpStatus.CREATED);
-	}
-	
-	@PutMapping("/{id}")
-	public ResponseEntity<?> commentUpdate(@AuthenticationPrincipal String userId, @RequestBody CommentDTO commentDTO, @PathVariable int id){
 
-		List<CommentEntity> commentEntity = service.update(commentDTO, userId, id);
-		
-		return new ResponseEntity<> (new CMResponseDTO<>(1, "comment update success", commentEntity), HttpStatus.OK);
-	}
-	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteComment(@AuthenticationPrincipal String userId, @PathVariable int id) {
-		
-		service.delete(id, userId);
-		return new ResponseEntity<> (new CMResponseDTO<>(1, "comment delete success", null), HttpStatus.OK);
-	}
+    @Autowired
+    public CommentService service;
+
+    @GetMapping
+    public ResponseEntity<?> retrieve() {
+        List<CommentEntity> entities = service.retrieve();
+
+        List<CommentDTO> dtos = entities.stream().map(CommentDTO::new).collect(Collectors.toList());
+
+        ResponseDTO<CommentDTO> response = ResponseDTO.<CommentDTO>builder().data(dtos).build();
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{boardId}")
+    public ResponseEntity<?> retrieveComment(@PathVariable String boardId) {
+        List<CommentEntity> entities = service.retrieve(boardId);
+
+        List<CommentDTO> dtos = entities.stream().map(CommentDTO::new).collect(Collectors.toList());
+
+        ResponseDTO<CommentDTO> response = ResponseDTO.<CommentDTO>builder().data(dtos).build();
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<?> save(@AuthenticationPrincipal String userId, @RequestBody CommentDTO commentDTO) {
+        CommentEntity commentEntity = service.create(commentDTO.getComment(), commentDTO.getBoardId(), userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentEntity);
+    }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<?> update(@AuthenticationPrincipal String userId,
+										   @RequestBody CommentDTO commentDTO,
+										   @PathVariable int id) {
+        service.update(commentDTO, id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/delete")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal String userId, @PathVariable int id) {
+        service.delete(id, userId);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }

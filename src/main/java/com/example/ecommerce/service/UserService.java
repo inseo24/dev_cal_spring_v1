@@ -33,7 +33,6 @@ public class UserService {
 	public void updatePassword(final String userId, final String password) {
 		final UserEntity userEntity = userRepository.findById(userId).get();
 		userEntity.updatePassword(password);
-		userRepository.save(userEntity);
 	}
 
 	private void isPasswordMatches(String password, PasswordEncoder encoder, UserEntity originalUser) {

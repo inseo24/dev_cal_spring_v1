@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("/auth/signup")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO) {
         UserEntity user = UserEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
-                .mobileNum(userDTO.getMobileNum()).password(passwordEncoder.encode(userDTO.getPassword())).build();
+                .mobileNumber(userDTO.getMobileNumber()).password(passwordEncoder.encode(userDTO.getPassword())).build();
         userService.create(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
@@ -45,7 +45,7 @@ public class UserController {
     @PutMapping("/auth/update")
     public ResponseEntity<HttpStatus> updatePassword(@AuthenticationPrincipal String userId,
                                                      @RequestBody @Valid UserUpdateDTO userDTO) {
-        userService.updatePassword(userId, userDTO.getPassword());
+        userService.updatePassword(userId, passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
