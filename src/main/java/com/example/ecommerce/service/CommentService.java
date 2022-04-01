@@ -57,9 +57,8 @@ public class CommentService {
 
     @Transactional
     public void update(String comment, Integer id) {
-        commentRepository.findById(id).orElseThrow();
-        comment.update(comment);
+        CommentEntity entity = commentRepository.findById(id).orElseThrow();
+        entity.update(comment);
     }
-
 
 }
