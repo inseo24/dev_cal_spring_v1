@@ -5,7 +5,7 @@ package com.example.ecommerce.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,21 +24,21 @@ import com.example.ecommerce.service.ScrapService;
 
 @RestController
 @RequestMapping("/scrap")
+@RequiredArgsConstructor
 public class ScrapController {
-	
-	@Autowired
+
 	private ScrapService service;
 	
 	@PostMapping("/{eventId}")
 	public ResponseEntity<?> scrap(@PathVariable String eventId, @AuthenticationPrincipal String userId){
 		 service.scrap(eventId, userId); 
-		return new ResponseEntity<>(new CMResponseDTO<>(1, "scrap ¼º°ø", null), HttpStatus.OK);
+		return new ResponseEntity<>(new CMResponseDTO<>(1, "scrap ï¿½ï¿½ï¿½ï¿½", null), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{eventId}")
 	public ResponseEntity<?> unscrap(@PathVariable String eventId, @AuthenticationPrincipal String userId){
 		service.unscrap(eventId, userId);
-		return new ResponseEntity<>(new CMResponseDTO<>(1, "unscrap ¼º°ø", null), HttpStatus.OK);
+		return new ResponseEntity<>(new CMResponseDTO<>(1, "unscrap ï¿½ï¿½ï¿½ï¿½", null), HttpStatus.OK);
 	}
 	
 	@GetMapping

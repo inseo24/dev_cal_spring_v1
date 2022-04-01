@@ -1,11 +1,11 @@
 package com.example.ecommerce.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.dto.CommentDTO;
@@ -19,72 +19,47 @@ import com.example.ecommerce.persistence.UserRepository;
 
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
-	
-	@Autowired
-	private CommentRepository commentRepo;
-	
-	@Autowired
-	private UserRepository userRepo;
-	
-	@Autowired
-	private BoardRepository boardRepo;
-	
-	
-	@Transactional
-	public CommentEntity create(String comment, String boardId, String userId) {
-				
-		BoardEntity boardEntity = boardRepo.getById(boardId);
-		
-		UserEntity user = userRepo.findById(userId).orElseThrow(() -> {
-			throw new CustomApiException("유저 아이디를 찾을 수가 없습니다.");
-		});
 
-		CommentEntity entity = new CommentEntity();
-		entity.setBoard(boardEntity);
-		entity.setUser(user);
-		entity.setComment(comment);
-		
-		return commentRepo.save(entity);
-	}
-	
-	@Transactional
-	public List<CommentEntity> retrieve(final String boardId) {
-		return commentRepo.retrieveComment(boardId);
-	}
-	
-	@Transactional
-	public List<CommentEntity> retrieve() {
-		return commentRepo.findAll();
-	}
+    private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
 
-	@Transactional
-	public void delete(int id, String userId) {
-		
-		commentRepo.delete(id, userId);
-		return;
-	}
-	
-	@Transactional
-	public List<CommentEntity> update(CommentDTO commentDTO, String userId, Integer id) {
-		
-		UserEntity user = userRepo.findById(userId).orElseThrow(() -> {
-			throw new CustomApiException("유저 아이디를 찾을 수가 없습니다.");
-		});
-		
-		String commentContent = commentDTO.getComment();
-		
-		final Optional<CommentEntity> original = commentRepo.findById(id);
+    @Transactional
+    public CommentEntity create(String comment, String boardId, String userId) {
 
-		original.ifPresent(comment -> {
-			comment.setComment(commentContent);
-			
-			commentRepo.save(comment);
-		});
-		
-		return retrieve();
-	}
-	
+        BoardEntity boardEntity = boardRepository.getById(boardId);
 
-	
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> {
+            throw new CustomApiException("user not found");
+        });
+
+        CommentEntity entity = new CommentEntity(comment, userId, boardId);
+        return commentRepository.save(entity);
+    }
+
+    public List<CommentEntity> retrieve(final String boardId) {
+        return commentRepository.findAllByBoardId(boardId);
+    }
+
+    @Transactional
+    public List<CommentEntity> retrieve() {
+        return commentRepository.findAll();
+    }
+
+    @Transactional
+    public void delete(int id, String userId) {
+        final CommentEntity entity = commentRepository.findById(id).orElseThrow();
+        if (!Objects.equals(entity.getUserId(), userId)) throw new CustomApiException("not same user");
+        entity.delete();
+    }
+
+    @Transactional
+    public void update(CommentDTO commentDTO, Integer id) {
+        final CommentEntity comment = commentRepository.findById(id).orElseThrow();
+        comment.update(commentDTO.getComment());
+    }
+
+
 }

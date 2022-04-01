@@ -16,23 +16,17 @@ public class EventService {
 
 	@Autowired
 	private EventRepository repo;
-	
 
 	public List<EventEntity> retrieve(){
 		return repo.findAll();
 	}
 	
 	public List<EventEntity> create(final EventEntity entity) {
-	
 		repo.save(entity);
-
 		return repo.findByEventId(entity.getEventId());
 	}
 	
-	@Transactional
 	public List<EventEntity> retrieve(String event){
 		return repo.findByTitleContains(event);
 	}
-		
-
 }

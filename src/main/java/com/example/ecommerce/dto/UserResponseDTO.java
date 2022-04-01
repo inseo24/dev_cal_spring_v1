@@ -18,15 +18,13 @@ public class UserResponseDTO {
  	private String email;
 	private String name;
 	private String userId;
-	private LocalDateTime modifiedTime;
-	
+	private String mobileNumber;
+
 	public UserEntity toEntity() {
 		return UserEntity.builder()
 				.name(name)
 				.email(email)
-				.modifiedTime(modifiedTime)
-				.userId(userId)
+				.mobileNumber(mobileNumber)
 				.build();
 	}
-
 }

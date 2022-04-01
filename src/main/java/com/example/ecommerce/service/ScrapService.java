@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.model.ScrapEntity;
@@ -13,9 +13,9 @@ import com.example.ecommerce.persistence.ScrapRepository;
 
 
 @Service
+@RequiredArgsConstructor
 public class ScrapService {
 	
-	@Autowired
 	private ScrapRepository scrapRepository;
 	
 	@Transactional
@@ -30,8 +30,6 @@ public class ScrapService {
 	
 	@Transactional
 	public List<ScrapEntity> retrieve(String userId) {
-		
-		
 		return scrapRepository.retrieveScrap(userId);
 	}
 	

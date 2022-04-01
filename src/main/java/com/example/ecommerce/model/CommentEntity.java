@@ -16,15 +16,11 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Getter
 @Entity
 @Table(name = "Comment")
 public class CommentEntity {
@@ -35,20 +31,37 @@ public class CommentEntity {
 	
 	@Column(length = 100, nullable = false)
 	private String comment;
-	
-	@JoinColumn(name = "userId")
-	@ManyToOne
-	private UserEntity user;
-	
-	@JoinColumn(name = "boardId")
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-	@JsonIgnore
-	private BoardEntity board;
-	
+
+	private String userId;
+
+	@Builder
+	public CommentEntity(String comment, String userId, String boardId) {
+		this.comment = comment;
+		this.userId = userId;
+		this.boardId = boardId;
+		this.isDeleted = false;
+	}
+
+	private String boardId;
+
+	private boolean isDeleted;
+
+	private LocalDateTime deletedAt;
+
+	@CreationTimestamp
 	private LocalDateTime createdTime;
-	
+
 	@PrePersist
 	public void createdTime() {
 		this.createdTime = LocalDateTime.now();
+	}
+
+	public void delete() {
+		this.isDeleted = true;
+		this.deletedAt = LocalDateTime.now();
+	}
+
+	public void update(String comment) {
+		this.comment = comment;
 	}
 }
