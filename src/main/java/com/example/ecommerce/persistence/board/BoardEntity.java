@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.persistence.board;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import com.example.ecommerce.persistence.comment.CommentEntity;
+import com.example.ecommerce.persistence.image.ImageEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
 import org.hibernate.annotations.GenericGenerator;
 
 import lombok.AllArgsConstructor;
@@ -44,7 +47,7 @@ public class BoardEntity {
 	
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "boardId")
-	private List<ImageEntity> images = new ArrayList<>(); 
+	private List<ImageEntity> images = new ArrayList<>();
 	
 	@OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "boardId")

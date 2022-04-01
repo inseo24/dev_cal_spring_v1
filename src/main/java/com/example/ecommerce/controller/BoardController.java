@@ -8,12 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.ecommerce.dto.BoardDTO;
-import com.example.ecommerce.dto.ImageDTO;
+import com.example.ecommerce.dto.board.BoardDTO;
+import com.example.ecommerce.dto.image.ImageDTO;
 import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.model.BoardEntity;
-import com.example.ecommerce.model.UserEntity;
-import com.example.ecommerce.persistence.UserRepository;
+import com.example.ecommerce.persistence.board.BoardEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
+import com.example.ecommerce.persistence.user.UserRepository;
 import com.example.ecommerce.service.BoardService;
 
 @RestController

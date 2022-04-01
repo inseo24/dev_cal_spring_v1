@@ -2,13 +2,11 @@ package com.example.ecommerce.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.model.EventEntity;
-import com.example.ecommerce.persistence.EventRepository;
+import com.example.ecommerce.persistence.event.EventEntity;
+import com.example.ecommerce.persistence.event.EventRepository;
 
 
 @Service

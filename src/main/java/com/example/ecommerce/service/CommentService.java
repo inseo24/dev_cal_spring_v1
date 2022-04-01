@@ -8,14 +8,13 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.dto.CommentDTO;
 import com.example.ecommerce.handler.ex.CustomApiException;
-import com.example.ecommerce.model.BoardEntity;
-import com.example.ecommerce.model.CommentEntity;
-import com.example.ecommerce.model.UserEntity;
-import com.example.ecommerce.persistence.BoardRepository;
-import com.example.ecommerce.persistence.CommentRepository;
-import com.example.ecommerce.persistence.UserRepository;
+import com.example.ecommerce.persistence.board.BoardEntity;
+import com.example.ecommerce.persistence.comment.CommentEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
+import com.example.ecommerce.persistence.board.BoardRepository;
+import com.example.ecommerce.persistence.comment.CommentRepository;
+import com.example.ecommerce.persistence.user.UserRepository;
 
 
 @Service

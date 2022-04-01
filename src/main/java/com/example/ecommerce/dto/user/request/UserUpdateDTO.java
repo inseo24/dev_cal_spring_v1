@@ -1,4 +1,4 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.user.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

@@ -1,9 +1,9 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.image;
 
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.ecommerce.model.ImageEntity;
+import com.example.ecommerce.persistence.image.ImageEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

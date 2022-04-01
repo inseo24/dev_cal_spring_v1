@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.persistence.user;
 
 import java.time.LocalDateTime;
 

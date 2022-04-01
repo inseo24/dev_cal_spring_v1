@@ -1,7 +1,6 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.comment;
 
-import com.example.ecommerce.model.CommentEntity;
-import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.comment.CommentEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
