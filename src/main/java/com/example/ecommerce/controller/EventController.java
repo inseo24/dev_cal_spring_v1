@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ecommerce.dto.event.EventDTO;
 import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.persistence.event.EventEntity;
+import com.example.ecommerce.persistence.event.EventJpaEntity;
 import com.example.ecommerce.service.EventService;
 
 @RestController
@@ -27,7 +27,7 @@ public class EventController {
 	@GetMapping
 	public ResponseEntity<?> retrieveBoardList() {
 
-		List<EventEntity> entities = eventService.retrieve();
+		List<EventJpaEntity> entities = eventService.retrieve();
 
 		List<EventDTO> dtos = entities.stream().map(EventDTO::new).collect(Collectors.toList());
 
@@ -39,8 +39,8 @@ public class EventController {
 	@PostMapping
 	public ResponseEntity<?> createEvent(@RequestBody EventDTO dto) {
 		try {
-			EventEntity entity = EventDTO.toEntity(dto);
-			List<EventEntity> entities = eventService.create(entity);
+			EventJpaEntity entity = EventDTO.toEntity(dto);
+			List<EventJpaEntity> entities = eventService.create(entity);
 			List<EventDTO> dtos = entities.stream().map(EventDTO::new).collect(Collectors.toList());
 			ResponseDTO<EventDTO> response = ResponseDTO.<EventDTO>builder().data(dtos).build();
 			return ResponseEntity.ok().body(response);
@@ -56,7 +56,7 @@ public class EventController {
 	@GetMapping("/{event}")
 	public ResponseEntity<?> retreive(@PathVariable String event){
 		try {
-			List<EventEntity> entities = eventService.retrieve(event);
+			List<EventJpaEntity> entities = eventService.retrieve(event);
 			List<EventDTO> dtos = entities.stream().map(EventDTO::new).collect(Collectors.toList());
 			ResponseDTO<EventDTO> response = ResponseDTO.<EventDTO>builder().data(dtos).build(); 
 			return ResponseEntity.ok().body(response);

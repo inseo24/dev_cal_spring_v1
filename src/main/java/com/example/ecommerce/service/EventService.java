@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.persistence.event.EventEntity;
+import com.example.ecommerce.persistence.event.EventJpaEntity;
 import com.example.ecommerce.persistence.event.EventRepository;
 
 
@@ -15,16 +15,16 @@ public class EventService {
 
 	private final EventRepository eventRepository;
 
-	public List<EventEntity> retrieve(){
+	public List<EventJpaEntity> retrieve(){
 		return eventRepository.findAll();
 	}
 	
-	public List<EventEntity> create(final EventEntity entity) {
+	public List<EventJpaEntity> create(final EventJpaEntity entity) {
 		eventRepository.save(entity);
 		return eventRepository.findByEventId(entity.getEventId());
 	}
 	
-	public List<EventEntity> retrieve(String event){
+	public List<EventJpaEntity> retrieve(String event){
 		return eventRepository.findByTitleContains(event);
 	}
 }

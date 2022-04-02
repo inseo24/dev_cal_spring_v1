@@ -1,7 +1,5 @@
 package com.example.ecommerce.controller;
 
-
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.ecommerce.dto.CMResponseDTO;
 import com.example.ecommerce.dto.ResponseDTO;
 import com.example.ecommerce.dto.scrap.ScrapDTO;
-import com.example.ecommerce.persistence.scrap.ScrapEntity;
+import com.example.ecommerce.persistence.scrap.ScrapJpaEntity;
 import com.example.ecommerce.service.ScrapService;
 
 @RestController
@@ -44,7 +42,7 @@ public class ScrapController {
 	@GetMapping
 	public ResponseEntity<?> getScrap(@AuthenticationPrincipal String userId){
 		
-		List<ScrapEntity> entities = scrapService.retrieve(userId);
+		List<ScrapJpaEntity> entities = scrapService.retrieve(userId);
 		
 		List<ScrapDTO> dtos = entities.stream().map(ScrapDTO::new).collect(Collectors.toList());
 		

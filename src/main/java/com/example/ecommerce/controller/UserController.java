@@ -2,7 +2,7 @@ package com.example.ecommerce.controller;
 
 import com.example.ecommerce.dto.user.UserDTO;
 import com.example.ecommerce.dto.user.request.UserUpdateDTO;
-import com.example.ecommerce.persistence.user.UserEntity;
+import com.example.ecommerce.persistence.user.UserJpaEntity;
 import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 
@@ -30,7 +30,7 @@ public class UserController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO) {
-        UserEntity user = UserEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
+        UserJpaEntity user = UserJpaEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
                 .mobileNumber(userDTO.getMobileNumber()).password(passwordEncoder.encode(userDTO.getPassword())).build();
         userService.create(user);
         return ResponseEntity.ok(HttpStatus.OK);
@@ -38,13 +38,12 @@ public class UserController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticate(@RequestBody @Valid UserDTO userDTO) {
-        UserEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
+        UserJpaEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
         return ResponseEntity.ok().body(UserDTO.builder().token(tokenProvider.create(user)).build());
     }
 
     @PutMapping("/auth/update")
     public ResponseEntity<HttpStatus> updatePassword(@AuthenticationPrincipal String userId,
-
                                                      @RequestBody @Valid UserUpdateDTO userDTO) {
         userService.updatePassword(userId, passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(HttpStatus.OK);

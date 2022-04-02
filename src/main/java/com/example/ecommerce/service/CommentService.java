@@ -9,9 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.handler.ex.CustomApiException;
-import com.example.ecommerce.persistence.board.BoardEntity;
-import com.example.ecommerce.persistence.comment.CommentEntity;
-import com.example.ecommerce.persistence.user.UserEntity;
+import com.example.ecommerce.persistence.board.BoardJpaEntity;
+import com.example.ecommerce.persistence.comment.CommentJpaEntity;
 import com.example.ecommerce.persistence.board.BoardRepository;
 import com.example.ecommerce.persistence.comment.CommentRepository;
 import com.example.ecommerce.persistence.user.UserRepository;
@@ -26,37 +25,37 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public CommentEntity create(String comment, String boardId, String userId) {
+    public CommentJpaEntity create(String comment, String boardId, String userId) {
 
-        BoardEntity boardEntity = boardRepository.getById(boardId);
+        BoardJpaEntity boardEntity = boardRepository.getById(boardId);
 
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> {
             throw new CustomApiException("user not found");
         });
 
-        CommentEntity entity = new CommentEntity(comment, userId, boardId);
+        CommentJpaEntity entity = new CommentJpaEntity(comment, userId, boardId);
         return commentRepository.save(entity);
     }
 
-    public List<CommentEntity> retrieve(final String boardId) {
+    public List<CommentJpaEntity> retrieve(final String boardId) {
         return commentRepository.findAllByBoardId(boardId);
     }
 
     @Transactional
-    public List<CommentEntity> retrieve() {
+    public List<CommentJpaEntity> retrieve() {
         return commentRepository.findAll();
     }
 
     @Transactional
     public void delete(int id, String userId) {
-        final CommentEntity entity = commentRepository.findById(id).orElseThrow();
+        final CommentJpaEntity entity = commentRepository.findById(id).orElseThrow();
         if (!Objects.equals(entity.getUserId(), userId)) throw new CustomApiException("not same user");
         entity.delete();
     }
 
     @Transactional
     public void update(String comment, Integer id) {
-        CommentEntity entity = commentRepository.findById(id).orElseThrow();
+        CommentJpaEntity entity = commentRepository.findById(id).orElseThrow();
         entity.update(comment);
     }
 

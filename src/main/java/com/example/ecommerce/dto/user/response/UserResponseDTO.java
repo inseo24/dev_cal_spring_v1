@@ -1,7 +1,5 @@
 package com.example.ecommerce.dto.user.response;
 
-import com.example.ecommerce.persistence.user.UserEntity;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

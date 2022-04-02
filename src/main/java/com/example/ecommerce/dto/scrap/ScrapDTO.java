@@ -1,8 +1,7 @@
 package com.example.ecommerce.dto.scrap;
 
-import com.example.ecommerce.persistence.event.EventEntity;
-import com.example.ecommerce.persistence.scrap.ScrapEntity;
-import com.example.ecommerce.persistence.user.UserEntity;
+import com.example.ecommerce.persistence.event.EventJpaEntity;
+import com.example.ecommerce.persistence.scrap.ScrapJpaEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,18 +15,18 @@ import lombok.NoArgsConstructor;
 public class ScrapDTO {
 	
 	private int scrapId;
-	private EventEntity event;
+	private EventJpaEntity event;
 	private UserEntity user;
 	
-	public ScrapDTO(final ScrapEntity entity) {
+	public ScrapDTO(final ScrapJpaEntity entity) {
 		this.scrapId = entity.getScrapId();
 		this.event = entity.getEvent();
 		this.user = entity.getUser();
 	}
 	
 	
-	public static ScrapEntity toEntity(final ScrapDTO dto) {
-		return ScrapEntity.builder()
+	public static ScrapJpaEntity toEntity(final ScrapDTO dto) {
+		return ScrapJpaEntity.builder()
 				.scrapId(dto.getScrapId())
 				.event(dto.getEvent())
 				.user(dto.getUser())

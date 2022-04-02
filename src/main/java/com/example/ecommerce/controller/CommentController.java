@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ecommerce.dto.comment.CommentDTO;
 import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.persistence.comment.CommentEntity;
+import com.example.ecommerce.persistence.comment.CommentJpaEntity;
 import com.example.ecommerce.service.CommentService;
 
 
@@ -32,7 +31,7 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<?> retrieve() {
-        List<CommentEntity> entities = service.retrieve();
+        List<CommentJpaEntity> entities = service.retrieve();
 
         List<CommentDTO> dtos = entities.stream().map(CommentDTO::new).collect(Collectors.toList());
 
@@ -43,7 +42,7 @@ public class CommentController {
 
     @GetMapping("/{boardId}")
     public ResponseEntity<?> retrieveComment(@PathVariable String boardId) {
-        List<CommentEntity> entities = service.retrieve(boardId);
+        List<CommentJpaEntity> entities = service.retrieve(boardId);
 
         List<CommentDTO> dtos = entities.stream().map(CommentDTO::new).collect(Collectors.toList());
 
@@ -54,7 +53,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<?> save(@AuthenticationPrincipal String userId, @RequestBody CommentDTO commentDTO) {
-        CommentEntity commentEntity = service.create(commentDTO.getComment(), commentDTO.getBoardId(), userId);
+        CommentJpaEntity commentEntity = service.create(commentDTO.getComment(), commentDTO.getBoardId(), userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentEntity);
     }
 

@@ -7,189 +7,140 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import com.example.ecommerce.domain.Board;
+import com.example.ecommerce.domain.Image;
+import com.example.ecommerce.mapper.BoardMapper;
+import com.example.ecommerce.mapper.ImageMapper;
+import com.example.ecommerce.persistence.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.dto.image.ImageDTO;
-import com.example.ecommerce.persistence.board.BoardEntity;
-import com.example.ecommerce.persistence.image.ImageEntity;
+import com.example.ecommerce.persistence.board.BoardJpaEntity;
+import com.example.ecommerce.persistence.image.ImageJpaEntity;
 import com.example.ecommerce.persistence.board.BoardRepository;
 import com.example.ecommerce.persistence.image.ImageRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
-	private final BoardRepository boardRepository;
-	private final ImageRepository imageRepository;
-	
-	@Value("${file.path}")
-	private String uploadFolder;
+    private final BoardRepository boardRepository;
+    private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
+    private final BoardMapper boardMapper;
+    private final ImageMapper imageMapper;
 
-	private void validate(final BoardEntity entity) {
-		if (entity == null) {
-			throw new RuntimeException("Entity cannot be null");
-		}
+    @Value("${file.path}")
+    private String uploadFolder;
 
-		if (entity.getUserId() == null) {
-			throw new RuntimeException("Unknown user.");
-		}
-	}
-	
-	
-	public List<BoardEntity> createBoard(final BoardEntity entity, ImageDTO imageDTO) {
-		
-		validate(entity);
-		
-		boardRepository.save(entity);
-		
-		UUID uuid = UUID.randomUUID();
-		
-		String imageFileName = uuid + "_" + imageDTO.getFile().getOriginalFilename();
-		Path imageFilePath = Paths.get(uploadFolder + imageFileName);
-		
-		try {
-			if (imageDTO.getFile().isEmpty()) {
-				throw new Exception("Error: file is empty");
-			}
-			if (!Files.exists(imageFilePath)) {
-				Files.write(imageFilePath, imageDTO.getFile().getBytes());
-			}
-			
-			try (InputStream inputStream = imageDTO.getFile().getInputStream()){
-				Files.copy(inputStream, imageFilePath.resolve(imageDTO.getFile().getOriginalFilename()),
-														StandardCopyOption.REPLACE_EXISTING);	
-			}
-			
-		} catch (Exception e) {
-			
-		}
-		
-		String type = imageDTO.getFile().getContentType();
-		
-		String boardId = entity.getBoardId();
-		ImageEntity image = imageDTO.toEntity(type, imageFileName, boardId);
-		imageRepository.save(image);
+    @Transactional
+    public void createWithImage(final Board board, Image image) {
+        validate(board);
+        verifyUserIdExists(board.getUserId());
 
-		return boardRepository.findByBoardId(entity.getBoardId());
-	}
-	
-	public BoardEntity create(final BoardEntity entity) {
-		
-		validate(entity);
-		
-		BoardEntity savedEntity = boardRepository.save(entity);
+        String imageFileName = UUID.randomUUID() + "_" + image.getFile().getOriginalFilename();
+        imageFilePath(image, imageFileName);
 
-		return savedEntity;
-	}
-	
-	public List<BoardEntity> retrieve(){
-		return boardRepository.findAll(Sort.by("boardId").descending());
-	}
-	
-	public List<BoardEntity> retrieveItem(final String boardId){
-		return boardRepository.findByBoardId(boardId);
-	}
+        ImageJpaEntity imageJpaEntity = imageRepository.save(imageMapper.mapToJpaEntity(image));
+        board.setImageId(imageJpaEntity.getId());
+        boardRepository.save(boardMapper.mapToJpaEntity(board));
+    }
 
-	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId){
-		
-		validate(entity);
-		
-		final Optional<BoardEntity> original = boardRepository.findById(boardId);
-		
-		original.ifPresent(board -> {
-			board.setTitle(entity.getTitle());
-			board.setContent(entity.getContent());
-			board.setModified_date(LocalDateTime.now());
-		
-			boardRepository.save(board);
-		});
-		
-		return retrieve();
-	}
-	
-	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId, ImageDTO imageDTO){
-		
-		validate(entity);
-		
-		final Optional<BoardEntity> original = boardRepository.findById(boardId);
-		
-		ImageEntity img = imageRepository.findByBoardId(boardId);
-		
-		UUID uuid = UUID.randomUUID();
-		String imageFileName = uuid + "_" + imageDTO.getFile().getOriginalFilename();	
-		Path imageFilePath = Paths.get(uploadFolder + imageFileName);
-		
-		try {
-			if (imageDTO.getFile().isEmpty()) {
-				throw new Exception("Error: file is empty");
-			}
-			if (!Files.exists(imageFilePath)) {
-				Files.write(imageFilePath, imageDTO.getFile().getBytes());
-			}
-			
-			try (InputStream inputStream = imageDTO.getFile().getInputStream()){
-				Files.copy(inputStream, imageFilePath.resolve(imageDTO.getFile().getOriginalFilename()),
-														StandardCopyOption.REPLACE_EXISTING);	
-			}
-			
-		} catch (Exception e) {
-			
-		}
-		
-		String type = imageDTO.getFile().getContentType();
-		
-		
-		if (img == null) {
-			ImageEntity image = new ImageEntity();
-			image.setBoardId(boardId);
-			image.setName(imageFileName);
-			image.setType(type);
-			imageRepository.save(image);
-			
-		} else {
-		
-			img.setName(imageFileName);
-			img.setType(type);
-			
-			imageRepository.save(img);
-			
-			
-		}
-		
-		original.ifPresent(board -> {
-			board.setTitle(entity.getTitle());
-			board.setContent(entity.getContent());
-			board.setModified_date(LocalDateTime.now());
-		
-			boardRepository.save(board);
-		});
-		
-		return retrieve();
-	}
-	
-	public List<BoardEntity> deleteBoard(String boardId){
-		
-		try {
-			
-			boardRepository.deleteById(boardId);
-			
-		} catch(Exception e) {
-			
-			throw new RuntimeException("error deleting entity" + boardId);
-		}
-		
-		return CMResponseDTO(1, "error", null);
-	}
+    @Transactional
+    public void create(final Board board) {
+        validate(board);
+        verifyUserIdExists(board.getUserId());
+        boardRepository.save(boardMapper.mapToJpaEntity(board));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Board> retrieve() {
+        return boardRepository.findAll(Sort.by("boardId").descending())
+                .stream().map(boardMapper::mapToDomain).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Board retrieveById(final Long boardId) {
+        return boardMapper.mapToDomain(boardRepository.findByBoardId(boardId).orElseThrow());
+    }
+
+    @Transactional
+    public void update(final String userId, final Board board, Long boardId) {
+        validate(board);
+        verifyBoardIdExists(boardId);
+        verifyUserIdExists(board.getUserId());
+
+        BoardJpaEntity entity = boardRepository.findByBoardIdAndUserId(boardId, userId).orElseThrow();
+        boardRepository.save(entity);
+    }
+
+    @Transactional
+    public void updateWithImage(final Board board, Long boardId, Image image) {
+        validate(board);
+        BoardJpaEntity boardJpaEntity = boardRepository.findByBoardIdAndUserId(boardId, board.getUserId()).orElseThrow();
+        Board originalBoard = boardMapper.mapToDomain(boardJpaEntity);
+        originalBoard.update(board.getTitle(), board.getContent());
+
+        String imageFileName = UUID.randomUUID() + "_" + image.getFile().getOriginalFilename();
+        String type = imageFilePath(image, imageFileName);
+
+        ImageJpaEntity imageJpaEntity = imageRepository.findByBoardId(boardId).orElseThrow();
+        Image originalImage = imageMapper.mapToDomain(imageJpaEntity);
+
+        originalImage.setType(type);
+        originalImage.setName(imageFileName);
+
+        imageRepository.save(imageMapper.mapToJpaEntity(originalImage));
+        boardRepository.save(boardMapper.mapToJpaEntity(originalBoard));
+    }
+
+    @Transactional
+    public void delete(Long boardId, String userId) {
+        BoardJpaEntity entity = boardRepository.findByBoardIdAndUserId(boardId, userId).orElseThrow();
+        boardRepository.deleteById(entity.getBoardId());
+    }
+
+    private void verifyBoardIdExists(Long boardId) {
+        boardRepository.findById(boardId).orElseThrow();
+    }
+
+    private void verifyUserIdExists(String userId) {
+        userRepository.findByUserId(userId).orElseThrow();
+    }
+
+    private void validate(final Board board) {
+        if (board == null) throw new RuntimeException("Entity cannot be null");
+        if (board.getUserId() == null) throw new RuntimeException("user cannot be null");
+    }
 
 
-	private List<BoardEntity> CMResponseDTO(int i, String string, Object object) {
-		return null;
-	}
+    // TODO 이거 언젠간 수정...
+    private String imageFilePath(Image image, String imageFileName) {
+        Path imageFilePath = Paths.get(uploadFolder + imageFileName);
+        try {
+            if (image.getFile().isEmpty()) {
+                throw new Exception("Error: file is empty");
+            }
+            if (!Files.exists(imageFilePath)) {
+                Files.write(imageFilePath, image.getFile().getBytes());
+            }
+
+            try (InputStream inputStream = image.getFile().getInputStream()) {
+                Files.copy(inputStream, imageFilePath.resolve(image.getFile().getOriginalFilename()),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+
+        } catch (Exception e) {
+
+        }
+        return image.getFile().getOriginalFilename();
+    }
+
 }

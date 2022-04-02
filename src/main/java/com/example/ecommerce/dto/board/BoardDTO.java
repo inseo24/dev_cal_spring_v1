@@ -1,56 +1,30 @@
 package com.example.ecommerce.dto.board;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import com.example.ecommerce.domain.Board;
+import lombok.*;
 
-import com.example.ecommerce.persistence.board.BoardEntity;
-import com.example.ecommerce.persistence.comment.CommentEntity;
-import com.example.ecommerce.persistence.image.ImageEntity;
-import com.example.ecommerce.persistence.user.UserEntity;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Builder
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
 public class BoardDTO {
-	private String boardId;
 	private String title;
 	private String content;
-	private UserEntity userId;
-	private List<CommentEntity> comments;
-	private List<ImageEntity> images;
-	private int boardNumber;
-	private LocalDateTime createdTime;
-	private LocalDateTime modified_date;
-	
-	public BoardDTO(final BoardEntity entity) {
-		this.boardId = entity.getBoardId();
-		this.boardNumber = entity.getBoardNumber();
-		this.comments = entity.getComments();
-		this.images = entity.getImages();
+	private String userId;
+	private Long imageId;
+
+	@Builder
+	public BoardDTO(final Board entity) {
+		this.imageId = entity.getImageId();
 		this.title = entity.getTitle();
 		this.content = entity.getContent();
 		this.userId = entity.getUserId();
-		this.createdTime = entity.getCreatedTime();
-		this.modified_date = entity.getModified_date();
 	}
-	
-	public static BoardEntity toEntity(final BoardDTO dto) {
-		return BoardEntity.builder()
-				.boardId(dto.getBoardId())
-				.boardNumber(dto.getBoardNumber())
+
+	public static Board toDomain(final BoardDTO dto) {
+		return Board.builder()
 				.title(dto.getTitle())
-				.comments(dto.getComments())
-				.images(dto.getImages())
 				.userId(dto.getUserId())
 				.content(dto.getContent())
-				.modified_date(dto.getModified_date())
-				.createdTime(dto.getCreatedTime())
+				.imageId(dto.getImageId())
 				.build();
 	}
 }
