@@ -6,9 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EventRepository extends JpaRepository<EventJpaEntity, String>{
-
+public interface EventRepository extends JpaRepository<EventJpaEntity, Long>{
 	List<EventJpaEntity> findByEventId(String eventId);
 	List<EventJpaEntity> findByTitleContains(String title);
-
 }

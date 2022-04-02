@@ -23,11 +23,11 @@ public class CommentJpaEntity {
 	@Column(length = 100, nullable = false)
 	private String comment;
 	private String userId;
-	private String boardId;
+	private Long boardId;
 	private boolean isDeleted;
 
 	@Builder
-	public CommentJpaEntity(String comment, String userId, String boardId) {
+	public CommentJpaEntity(String comment, String userId, Long boardId) {
 		this.comment = comment;
 		this.userId = userId;
 		this.boardId = boardId;

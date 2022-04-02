@@ -12,11 +12,11 @@ public class BoardDTO {
 	private Long imageId;
 
 	@Builder
-	public BoardDTO(final Board entity) {
-		this.imageId = entity.getImageId();
-		this.title = entity.getTitle();
-		this.content = entity.getContent();
-		this.userId = entity.getUserId();
+	public BoardDTO(final Board board) {
+		this.imageId = board.getImageId();
+		this.title = board.getTitle();
+		this.content = board.getContent();
+		this.userId = board.getUserId();
 	}
 
 	public static Board toDomain(final BoardDTO dto) {

@@ -7,48 +7,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.ecommerce.dto.CMResponseDTO;
-import com.example.ecommerce.dto.ResponseDTO;
+import org.springframework.web.bind.annotation.*;
 import com.example.ecommerce.dto.scrap.ScrapDTO;
-import com.example.ecommerce.persistence.scrap.ScrapJpaEntity;
 import com.example.ecommerce.service.ScrapService;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/scrap")
 @RequiredArgsConstructor
 public class ScrapController {
 
-	private final ScrapService scrapService;
-	
-	@PostMapping("/{eventId}")
-	public ResponseEntity<?> scrap(@PathVariable String eventId, @AuthenticationPrincipal String userId){
-		 scrapService.scrap(eventId, userId);
-		return new ResponseEntity<>(new CMResponseDTO<>(1, "scrap ����", null), HttpStatus.OK);
-	}
-	
-	@DeleteMapping("/{eventId}")
-	public ResponseEntity<?> unscrap(@PathVariable String eventId, @AuthenticationPrincipal String userId){
-		scrapService.unscrap(eventId, userId);
-		return new ResponseEntity<>(new CMResponseDTO<>(1, "unscrap ����", null), HttpStatus.OK);
-	}
-	
-	@GetMapping
-	public ResponseEntity<?> getScrap(@AuthenticationPrincipal String userId){
-		
-		List<ScrapJpaEntity> entities = scrapService.retrieve(userId);
-		
-		List<ScrapDTO> dtos = entities.stream().map(ScrapDTO::new).collect(Collectors.toList());
-		
-		ResponseDTO<ScrapDTO> response = ResponseDTO.<ScrapDTO>builder().data(dtos).build();
-		
-		return ResponseEntity.ok().body(response);
-	}
+    private final ScrapService scrapService;
 
+    @GetMapping
+    public ResponseEntity<?> retrieveByUserId(@AuthenticationPrincipal String userId) {
+        List<ScrapDTO> response = scrapService.retrieve(userId)
+                .stream().map(ScrapDTO::new).collect(Collectors.toList());
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/{eventId}")
+    public ResponseEntity<?> scrap(@PathVariable Long eventId, @AuthenticationPrincipal String userId) {
+        scrapService.scrap(eventId, userId);
+        return ok(HttpStatus.OK);
+    }
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<?> unScrap(@PathVariable Long eventId, @AuthenticationPrincipal String userId) {
+        scrapService.unScrap(eventId, userId);
+        return ok(HttpStatus.OK);
+    }
 }

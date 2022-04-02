@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import com.example.ecommerce.persistence.user.UserJpaEntity;
+import com.example.ecommerce.domain.User;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -15,14 +15,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class TokenProvider {
 	private static final String SECRETE_KEY = "NMA8JPctFuna59f5";
 	
-	public String create(UserJpaEntity userEntity) {
+	public String create(User user) {
 		
 		Date expiryDate = Date.from(
 				Instant.now()
 				.plus(1, ChronoUnit.DAYS));
+
 		return Jwts.builder()
 				.signWith(SignatureAlgorithm.HS512, SECRETE_KEY)
-				.setSubject(userEntity.getUserId()) 
+				.setSubject(user.getUserId())
 				.setIssuer("seoin")
 				.setIssuedAt(new Date()) 
 				.setExpiration(expiryDate) 
@@ -35,8 +36,7 @@ public class TokenProvider {
 				.setSigningKey(SECRETE_KEY)
 				.parseClaimsJws(token)
 				.getBody();
-		
-		
+
 		return claims.getSubject();
 	}
 

@@ -1,5 +1,6 @@
 package com.example.ecommerce.dto.user.response;
 
+import com.example.ecommerce.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +17,8 @@ public class UserResponseDTO {
 	private String userId;
 	private String mobileNumber;
 
-	public UserEntity toEntity() {
-		return UserEntity.builder()
+	public User toEntity() {
+		return User.builder()
 				.name(name)
 				.email(email)
 				.mobileNumber(mobileNumber)

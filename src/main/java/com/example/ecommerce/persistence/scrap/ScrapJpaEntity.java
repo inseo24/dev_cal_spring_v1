@@ -17,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "Scrap", uniqueConstraints = {
 		@UniqueConstraint(
 		name="scrap_uk", 
-		columnNames = {"user_id", "event_id"}
+		columnNames = {"userId", "eventId"}
 		)
 	}
 )

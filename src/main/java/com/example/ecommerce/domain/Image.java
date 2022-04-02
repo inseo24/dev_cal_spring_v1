@@ -16,9 +16,11 @@ public class Image {
     private String name;
 
     @Builder
-    public Image(MultipartFile file, Long boardId) {
+    public Image(MultipartFile file, Long boardId, String name, String type) {
         this.boardId = boardId;
         this.file = file;
+        this.type = type;
+        this.name = name;
     }
 
     public void setName(String name){

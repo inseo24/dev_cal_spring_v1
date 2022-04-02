@@ -1,8 +1,8 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.domain.User;
 import com.example.ecommerce.dto.user.UserDTO;
 import com.example.ecommerce.dto.user.request.UserUpdateDTO;
-import com.example.ecommerce.persistence.user.UserJpaEntity;
 import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 
@@ -29,16 +29,21 @@ public class UserController {
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO) {
-        UserJpaEntity user = UserJpaEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
-                .mobileNumber(userDTO.getMobileNumber()).password(passwordEncoder.encode(userDTO.getPassword())).build();
+    public ResponseEntity<?> register(@RequestBody @Valid UserDTO userDTO) {
+        User user = User.builder()
+                .email(userDTO.getEmail())
+                .name(userDTO.getName())
+                .mobileNumber(userDTO.getMobileNumber())
+                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .build();
+
         userService.create(user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/auth/signin")
     public ResponseEntity<?> authenticate(@RequestBody @Valid UserDTO userDTO) {
-        UserJpaEntity user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
+        User user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
         return ResponseEntity.ok().body(UserDTO.builder().token(tokenProvider.create(user)).build());
     }
 
@@ -48,5 +53,4 @@ public class UserController {
         userService.updatePassword(userId, passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
 }
