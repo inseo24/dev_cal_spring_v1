@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,8 +19,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "User", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class UserEntity {
 
-    @Id
-    @GeneratedValue(generator = "system-uuid")
+
+    @Id @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String userId;
 
