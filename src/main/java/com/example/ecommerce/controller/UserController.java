@@ -44,6 +44,7 @@ public class UserController {
 
     @PutMapping("/auth/update")
     public ResponseEntity<HttpStatus> updatePassword(@AuthenticationPrincipal String userId,
+
                                                      @RequestBody @Valid UserUpdateDTO userDTO) {
         userService.updatePassword(userId, passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(HttpStatus.OK);

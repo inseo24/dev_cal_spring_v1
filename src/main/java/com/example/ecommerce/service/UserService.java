@@ -1,6 +1,7 @@
 package com.example.ecommerce.service;
 
 import lombok.RequiredArgsConstructor;
+import com.example.ecommerce.dto.UserUpdateDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,17 @@ public class UserService {
 
 	public UserEntity create(final UserEntity userEntity) {
 		verifyUniqueEmail(userEntity.getEmail());
+		
+		
+		if (userEntity == null || userEntity.getEmail() == null ) {
+			throw new RuntimeException("Invalid arguments");
+		}
+		
+		final String email = userEntity.getEmail();
+		
+		if (userRepository.existsByEmail(email)) {
+			throw new RuntimeException("Email already exists");
+		}
 		return userRepository.save(userEntity);
 	}
 
@@ -42,6 +54,13 @@ public class UserService {
 
 	private void verifyUniqueEmail(String email) {
 		if (userRepository.existsByEmail(email)) throw new RuntimeException("Email already exists");
+
 	}
 
+	@Transactional
+	public void updatePassword(final String userId, final UserUpdateDTO userUpdateDto) {
+		final UserEntity userEntity = userRepository.findById(userId).get();
+		userEntity.updatePassword(userUpdateDto.getPassword());
+		userRepository.save(userEntity);
+	}
 }
