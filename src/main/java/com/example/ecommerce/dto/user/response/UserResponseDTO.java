@@ -1,8 +1,6 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.user.response;
 
-import java.time.LocalDateTime;
-
-import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

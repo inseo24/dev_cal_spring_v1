@@ -1,8 +1,8 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.scrap;
 
-import com.example.ecommerce.model.EventEntity;
-import com.example.ecommerce.model.ScrapEntity;
-import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.event.EventEntity;
+import com.example.ecommerce.persistence.scrap.ScrapEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

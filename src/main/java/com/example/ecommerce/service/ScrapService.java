@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.model.ScrapEntity;
-import com.example.ecommerce.persistence.ScrapRepository;
+import com.example.ecommerce.persistence.scrap.ScrapEntity;
+import com.example.ecommerce.persistence.scrap.ScrapRepository;
 
 
 @Service

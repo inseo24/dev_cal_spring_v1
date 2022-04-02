@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ecommerce.dto.CMResponseDTO;
 import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.dto.ScrapDTO;
-import com.example.ecommerce.model.ScrapEntity;
+import com.example.ecommerce.dto.scrap.ScrapDTO;
+import com.example.ecommerce.persistence.scrap.ScrapEntity;
 import com.example.ecommerce.service.ScrapService;
 
 @RestController

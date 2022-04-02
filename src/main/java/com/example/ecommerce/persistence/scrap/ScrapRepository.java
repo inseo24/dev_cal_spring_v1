@@ -1,4 +1,4 @@
-package com.example.ecommerce.persistence;
+package com.example.ecommerce.persistence.scrap;
 
 import java.util.List;
 
@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import com.example.ecommerce.model.ScrapEntity;
 
 public interface ScrapRepository extends JpaRepository<ScrapEntity, Integer> {
 
