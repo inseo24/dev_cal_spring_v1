@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,13 +23,11 @@ import com.example.ecommerce.persistence.image.ImageRepository;
 
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
 
-	@Autowired
-	private BoardRepository repo;
-	
-	@Autowired
-	private ImageRepository imgrepo;
+	private final BoardRepository boardRepository;
+	private final ImageRepository imageRepository;
 	
 	@Value("${file.path}")
 	private String uploadFolder;
@@ -49,7 +47,7 @@ public class BoardService {
 		
 		validate(entity);
 		
-		repo.save(entity);
+		boardRepository.save(entity);
 		
 		UUID uuid = UUID.randomUUID();
 		
@@ -77,40 +75,40 @@ public class BoardService {
 		
 		String boardId = entity.getBoardId();
 		ImageEntity image = imageDTO.toEntity(type, imageFileName, boardId);
-		imgrepo.save(image);		
+		imageRepository.save(image);
 
-		return repo.findByBoardId(entity.getBoardId());
+		return boardRepository.findByBoardId(entity.getBoardId());
 	}
 	
 	public BoardEntity create(final BoardEntity entity) {
 		
 		validate(entity);
 		
-		BoardEntity savedEntity = repo.save(entity);
+		BoardEntity savedEntity = boardRepository.save(entity);
 
 		return savedEntity;
 	}
 	
 	public List<BoardEntity> retrieve(){
-		return repo.findAll(Sort.by("boardId").descending());
+		return boardRepository.findAll(Sort.by("boardId").descending());
 	}
 	
 	public List<BoardEntity> retrieveItem(final String boardId){
-		return repo.findByBoardId(boardId);
+		return boardRepository.findByBoardId(boardId);
 	}
 
 	public List<BoardEntity> updateBoard(final BoardEntity entity, String boardId){
 		
 		validate(entity);
 		
-		final Optional<BoardEntity> original = repo.findById(boardId);
+		final Optional<BoardEntity> original = boardRepository.findById(boardId);
 		
 		original.ifPresent(board -> {
 			board.setTitle(entity.getTitle());
 			board.setContent(entity.getContent());
 			board.setModified_date(LocalDateTime.now());
 		
-			repo.save(board);
+			boardRepository.save(board);
 		});
 		
 		return retrieve();
@@ -120,9 +118,9 @@ public class BoardService {
 		
 		validate(entity);
 		
-		final Optional<BoardEntity> original = repo.findById(boardId);
+		final Optional<BoardEntity> original = boardRepository.findById(boardId);
 		
-		ImageEntity img = imgrepo.findByBoardId(boardId);
+		ImageEntity img = imageRepository.findByBoardId(boardId);
 		
 		UUID uuid = UUID.randomUUID();
 		String imageFileName = uuid + "_" + imageDTO.getFile().getOriginalFilename();	
@@ -153,14 +151,14 @@ public class BoardService {
 			image.setBoardId(boardId);
 			image.setName(imageFileName);
 			image.setType(type);
-			imgrepo.save(image);
+			imageRepository.save(image);
 			
 		} else {
 		
 			img.setName(imageFileName);
 			img.setType(type);
 			
-			imgrepo.save(img);
+			imageRepository.save(img);
 			
 			
 		}
@@ -170,7 +168,7 @@ public class BoardService {
 			board.setContent(entity.getContent());
 			board.setModified_date(LocalDateTime.now());
 		
-			repo.save(board);
+			boardRepository.save(board);
 		});
 		
 		return retrieve();
@@ -180,7 +178,7 @@ public class BoardService {
 		
 		try {
 			
-			repo.deleteById(boardId);
+			boardRepository.deleteById(boardId);
 			
 		} catch(Exception e) {
 			

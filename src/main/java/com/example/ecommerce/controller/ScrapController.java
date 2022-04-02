@@ -27,24 +27,24 @@ import com.example.ecommerce.service.ScrapService;
 @RequiredArgsConstructor
 public class ScrapController {
 
-	private ScrapService service;
+	private final ScrapService scrapService;
 	
 	@PostMapping("/{eventId}")
 	public ResponseEntity<?> scrap(@PathVariable String eventId, @AuthenticationPrincipal String userId){
-		 service.scrap(eventId, userId); 
+		 scrapService.scrap(eventId, userId);
 		return new ResponseEntity<>(new CMResponseDTO<>(1, "scrap ����", null), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{eventId}")
 	public ResponseEntity<?> unscrap(@PathVariable String eventId, @AuthenticationPrincipal String userId){
-		service.unscrap(eventId, userId);
+		scrapService.unscrap(eventId, userId);
 		return new ResponseEntity<>(new CMResponseDTO<>(1, "unscrap ����", null), HttpStatus.OK);
 	}
 	
 	@GetMapping
 	public ResponseEntity<?> getScrap(@AuthenticationPrincipal String userId){
 		
-		List<ScrapEntity> entities = service.retrieve(userId);
+		List<ScrapEntity> entities = scrapService.retrieve(userId);
 		
 		List<ScrapDTO> dtos = entities.stream().map(ScrapDTO::new).collect(Collectors.toList());
 		
