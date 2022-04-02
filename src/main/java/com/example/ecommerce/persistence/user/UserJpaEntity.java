@@ -44,7 +44,4 @@ public class UserJpaEntity {
         this.mobileNumber = mobileNumber;
     }
 
-    public void updatePassword(String password) {
-        this.password = password;
-    }
 }

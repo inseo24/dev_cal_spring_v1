@@ -1,25 +1,19 @@
 package com.example.ecommerce.dto;
 
-import com.example.ecommerce.persistence.comment.CommentJpaEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.ecommerce.domain.Comment;
+import lombok.*;
 
-@Builder
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Data
 public class CommentDTO {
 	private String comment;
-	private String boardId;
-	private int id;
+	private Long boardId;
 	private String userId;
-	
-	public CommentDTO(final CommentJpaEntity entity) {
-		this.boardId = entity.getBoardId();
-		this.userId = entity.getUserId();
-		this.id = entity.getId();
-		this.comment= entity.getComment();
+
+	@Builder
+	public CommentDTO(final Comment comment) {
+		this.boardId = comment.getBoardId();
+		this.userId = comment.getUserId();
+		this.comment= comment.getComment();
 	}
 }

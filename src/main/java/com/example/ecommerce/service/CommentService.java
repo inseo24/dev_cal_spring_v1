@@ -2,19 +2,18 @@ package com.example.ecommerce.service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
+import com.example.ecommerce.domain.Comment;
+import com.example.ecommerce.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.example.ecommerce.handler.ex.CustomApiException;
-import com.example.ecommerce.persistence.board.BoardJpaEntity;
 import com.example.ecommerce.persistence.comment.CommentJpaEntity;
-import com.example.ecommerce.persistence.board.BoardRepository;
 import com.example.ecommerce.persistence.comment.CommentRepository;
 import com.example.ecommerce.persistence.user.UserRepository;
-
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,41 +21,41 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    private final BoardRepository boardRepository;
+    private final CommentMapper commentMapper;
 
     @Transactional
-    public CommentJpaEntity create(String comment, String boardId, String userId) {
-
-        BoardJpaEntity boardEntity = boardRepository.getById(boardId);
-
-        UserEntity user = userRepository.findById(userId).orElseThrow(() -> {
-            throw new CustomApiException("user not found");
-        });
-
-        CommentJpaEntity entity = new CommentJpaEntity(comment, userId, boardId);
-        return commentRepository.save(entity);
+    public void create(String comment, Long boardId, String userId) {
+        verifyUserId(userId);
+        commentRepository.save(new CommentJpaEntity(comment, userId, boardId));
     }
 
-    public List<CommentJpaEntity> retrieve(final String boardId) {
-        return commentRepository.findAllByBoardId(boardId);
+    @Transactional(readOnly = true)
+    public List<Comment> retrieveByBoardId(final String boardId) {
+        return commentRepository.findAllByBoardId(boardId)
+                .stream().map(commentMapper::mapToDomain).collect(Collectors.toList());
     }
 
-    @Transactional
-    public List<CommentJpaEntity> retrieve() {
-        return commentRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<Comment> retrieve() {
+        return commentRepository.findAll()
+                .stream().map(commentMapper::mapToDomain).collect(Collectors.toList());
     }
 
     @Transactional
-    public void delete(int id, String userId) {
+    public void delete(Long id, String userId) {
         final CommentJpaEntity entity = commentRepository.findById(id).orElseThrow();
         if (!Objects.equals(entity.getUserId(), userId)) throw new CustomApiException("not same user");
         entity.delete();
     }
 
     @Transactional
-    public void update(String comment, Integer id) {
+    public void update(String comment, Long id) {
         CommentJpaEntity entity = commentRepository.findById(id).orElseThrow();
         entity.update(comment);
+    }
+
+    private void verifyUserId(String userId) {
+        userRepository.findById(userId).orElseThrow();
     }
 
 }
