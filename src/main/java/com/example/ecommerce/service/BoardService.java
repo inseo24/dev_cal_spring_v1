@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.dto.ImageDTO;
-import com.example.ecommerce.model.BoardEntity;
-import com.example.ecommerce.model.ImageEntity;
-import com.example.ecommerce.persistence.BoardRepository;
-import com.example.ecommerce.persistence.ImageRepository;
+import com.example.ecommerce.dto.image.ImageDTO;
+import com.example.ecommerce.persistence.board.BoardEntity;
+import com.example.ecommerce.persistence.image.ImageEntity;
+import com.example.ecommerce.persistence.board.BoardRepository;
+import com.example.ecommerce.persistence.image.ImageRepository;
 
 
 @Service

@@ -1,6 +1,7 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.comment;
 
 import com.example.ecommerce.persistence.comment.CommentEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -3,7 +3,6 @@ package com.example.ecommerce.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.ecommerce.dto.CMResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ecommerce.dto.EventDTO;
+import com.example.ecommerce.dto.event.EventDTO;
 import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.model.EventEntity;
+import com.example.ecommerce.persistence.event.EventEntity;
 import com.example.ecommerce.service.EventService;
 
 @RestController

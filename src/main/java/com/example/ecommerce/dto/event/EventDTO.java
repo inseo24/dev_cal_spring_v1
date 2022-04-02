@@ -1,7 +1,7 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.event;
 import java.time.LocalDateTime;
 
-import com.example.ecommerce.model.EventEntity;
+import com.example.ecommerce.persistence.event.EventEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

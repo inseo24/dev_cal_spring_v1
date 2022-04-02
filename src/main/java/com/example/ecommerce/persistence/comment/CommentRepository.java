@@ -1,10 +1,8 @@
-package com.example.ecommerce.persistence;
+package com.example.ecommerce.persistence.comment;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.example.ecommerce.model.CommentEntity;
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 	List<CommentEntity> findAllByBoardId(String boardId);

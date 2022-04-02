@@ -1,8 +1,8 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.UserDTO;
-import com.example.ecommerce.dto.UserUpdateDTO;
-import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.dto.user.UserDTO;
+import com.example.ecommerce.dto.user.request.UserUpdateDTO;
+import com.example.ecommerce.persistence.user.UserEntity;
 import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 

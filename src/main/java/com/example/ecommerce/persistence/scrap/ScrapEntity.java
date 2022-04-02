@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.persistence.scrap;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -12,6 +12,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.example.ecommerce.persistence.event.EventEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;

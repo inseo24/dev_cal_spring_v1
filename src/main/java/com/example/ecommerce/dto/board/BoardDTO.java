@@ -1,12 +1,12 @@
-package com.example.ecommerce.dto;
+package com.example.ecommerce.dto.board;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.ecommerce.model.BoardEntity;
-import com.example.ecommerce.model.CommentEntity;
-import com.example.ecommerce.model.ImageEntity;
-import com.example.ecommerce.model.UserEntity;
+import com.example.ecommerce.persistence.board.BoardEntity;
+import com.example.ecommerce.persistence.comment.CommentEntity;
+import com.example.ecommerce.persistence.image.ImageEntity;
+import com.example.ecommerce.persistence.user.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
