@@ -4,155 +4,69 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.ecommerce.dto.board.BoardDTO;
 import com.example.ecommerce.dto.image.ImageDTO;
-import com.example.ecommerce.dto.ResponseDTO;
-import com.example.ecommerce.persistence.board.BoardEntity;
-import com.example.ecommerce.persistence.user.UserEntity;
-import com.example.ecommerce.persistence.user.UserRepository;
 import com.example.ecommerce.service.BoardService;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
 
-	private final BoardService boardService;
-	private final UserRepository userRepository;
+    private final BoardService boardService;
 
-	@PostMapping("/image")
-	public ResponseEntity<?> createBoardImg(@AuthenticationPrincipal String userId, ImageDTO imageDTO,
-			@RequestPart(value = "data", required = false) BoardDTO dto) {
+    @PostMapping("/image")
+    public ResponseEntity<?> createWithImage(@AuthenticationPrincipal String userId,
+                                             ImageDTO imageDTO,
+                                             @RequestPart(value = "data", required = false) BoardDTO boardDTO) {
+        boardService.createWithImage(BoardDTO.toDomain(boardDTO), ImageDTO.toDomain(imageDTO));
+        return ok().body(HttpStatus.OK);
+    }
 
-		try {
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody BoardDTO request) {
+        boardService.create(BoardDTO.toDomain(request));
+        return ok().body(HttpStatus.OK);
+    }
 
-			BoardEntity entity = BoardDTO.toEntity(dto);
+    @GetMapping
+    public ResponseEntity<?> retrieve() {
+        List<BoardDTO> response = boardService.retrieve().stream().map(BoardDTO::new).collect(Collectors.toList());
+        return ok().body(response);
+    }
 
-			UserEntity userEntity = userRepository.findByUserId(userId);
-			entity.setUserId(userEntity);
+    @GetMapping("/{boardId}")
+    public ResponseEntity<?> retrieveById(@PathVariable Long boardId) {
+        return ok().body(boardService.retrieveById(boardId));
+    }
 
-			List<BoardEntity> entities = boardService.createBoard(entity, imageDTO);
+    @PutMapping("/{boardId}/image")
+    public ResponseEntity<?> updateWithImage(@AuthenticationPrincipal String userId, ImageDTO imageDTO,
+                                             @RequestPart(value = "data", required = false) BoardDTO boardDTO,
+                                             @PathVariable Long boardId) {
+        boardService.updateWithImage(BoardDTO.toDomain(boardDTO), boardId, ImageDTO.toDomain(imageDTO));
+        return ok().body(HttpStatus.OK);
+    }
 
-			List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
+    @PutMapping("/{boardId}")
+    public ResponseEntity<?> update(@AuthenticationPrincipal String userId,
+                                    @RequestPart(value = "data", required = false) BoardDTO boardDTO,
+                                    @PathVariable Long boardId) {
+        boardService.update(userId, BoardDTO.toDomain(boardDTO), boardId);
+        return ok().body(HttpStatus.OK);
 
-			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
+    }
 
-			return ResponseEntity.ok().body(response);
-
-		} catch (Exception e) {
-
-			String error = e.getMessage();
-			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().error(error).build();
-
-			return ResponseEntity.badRequest().body(response);
-
-		}
-	}
-
-	@PostMapping
-	public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId,
-			@RequestBody BoardDTO dto) {
-
-		try {
-			UserEntity userEntity = userRepository.findByUserId(userId);
-			BoardEntity entity = BoardDTO.toEntity(dto);
-			entity.setUserId(userEntity);
-
-			BoardEntity savedEntity = boardService.create(entity);
-
-			return ResponseEntity.ok().body(savedEntity);
-
-		} catch (Exception e) {
-
-			String error = e.getMessage();
-			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().error(error).build();
-
-			return ResponseEntity.badRequest().body(response);
-
-		}
-	}
-
-	@GetMapping
-	public ResponseEntity<?> retrieveBoardList(@AuthenticationPrincipal String userId) {
-
-		List<BoardEntity> entities = boardService.retrieve();
-
-		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
-
-		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
-
-		return ResponseEntity.ok().body(response);
-	}
-
-	@GetMapping("/{boardId}")
-	public ResponseEntity<?> retrieveBoardItem(@PathVariable String boardId) {
-
-		List<BoardEntity> entities = boardService.retrieveItem(boardId);
-
-		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
-
-		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
-
-		return ResponseEntity.ok().body(response);
-	}
-
-	@PutMapping("/{boardId}/image")
-	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId, ImageDTO imageDTO,
-			@RequestPart(value = "data", required = false) BoardDTO dto, @PathVariable String boardId) {
-
-		BoardEntity entity = BoardDTO.toEntity(dto);
-
-		UserEntity userEntity = userRepository.findByUserId(userId);
-
-		entity.setUserId(userEntity);
-
-		List<BoardEntity> entities = boardService.updateBoard(entity, boardId, imageDTO);
-
-		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
-
-		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
-
-		return ResponseEntity.ok().body(response);
-
-	}
-
-	@PutMapping("/{boardId}")
-	public ResponseEntity<?> updateBoard(@AuthenticationPrincipal String userId,
-			@RequestPart(value = "data", required = false) BoardDTO dto, @PathVariable String boardId) {
-
-		BoardEntity entity = BoardDTO.toEntity(dto);
-
-		UserEntity userEntity = userRepository.findByUserId(userId);
-
-		entity.setUserId(userEntity);
-
-		List<BoardEntity> entities = boardService.updateBoard(entity, boardId);
-
-		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
-
-		ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().data(dtos).build();
-
-		return ResponseEntity.ok().body(response);
-
-	}
-
-	@DeleteMapping("/{boardId}")
-	public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @PathVariable String boardId) {
-		try {
-
-			boardService.deleteBoard(boardId);
-
-			return (ResponseEntity<?>) ResponseEntity.ok();
-
-		} catch (Exception e) {
-
-			String error = e.getMessage();
-			ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().error(error).build();
-			return ResponseEntity.badRequest().body(response);
-		}
-	}
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<?> delete(@AuthenticationPrincipal String userId, @PathVariable Long boardId) {
+        boardService.delete(boardId, userId);
+        return ok().body(HttpStatus.OK);
+    }
 }

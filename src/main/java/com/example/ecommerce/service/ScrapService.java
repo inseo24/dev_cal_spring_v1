@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.persistence.scrap.ScrapEntity;
+import com.example.ecommerce.persistence.scrap.ScrapJpaEntity;
 import com.example.ecommerce.persistence.scrap.ScrapRepository;
 
 
@@ -29,7 +29,7 @@ public class ScrapService {
 	}
 	
 	@Transactional
-	public List<ScrapEntity> retrieve(String userId) {
+	public List<ScrapJpaEntity> retrieve(String userId) {
 		return scrapRepository.retrieveScrap(userId);
 	}
 	

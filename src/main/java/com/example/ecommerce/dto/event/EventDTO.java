@@ -1,7 +1,7 @@
 package com.example.ecommerce.dto.event;
 import java.time.LocalDateTime;
 
-import com.example.ecommerce.persistence.event.EventEntity;
+import com.example.ecommerce.persistence.event.EventJpaEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +25,7 @@ public class EventDTO {
 	private String limit_personnel;
 	private String related_link;
 	
-	public EventDTO(final EventEntity entity) {
+	public EventDTO(final EventJpaEntity entity) {
 		this.eventId = entity.getEventId();
 		this.title = entity.getTitle();
 		this.start = entity.getStart();
@@ -37,8 +37,8 @@ public class EventDTO {
 		this.related_link = entity.getRelated_link();
 	}
 	
-	public static EventEntity toEntity(final EventDTO dto ) {
-		return EventEntity.builder()
+	public static EventJpaEntity toEntity(final EventDTO dto ) {
+		return EventJpaEntity.builder()
 				.eventId(dto.getEventId())
 				.title(dto.getTitle())
 				.start(dto.getStart())

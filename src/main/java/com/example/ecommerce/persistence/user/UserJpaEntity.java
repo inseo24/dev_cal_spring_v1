@@ -1,4 +1,4 @@
-package com.example.ecommerce.model;
+package com.example.ecommerce.persistence.user;
 
 import java.time.LocalDateTime;
 
@@ -6,19 +6,14 @@ import javax.persistence.*;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import org.hibernate.annotations.GenericGenerator;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 @Table(name = "User", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
-public class UserEntity {
-
+public class UserJpaEntity {
 
     @Id @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
@@ -31,7 +26,6 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false)
-    @JsonIgnore
     private String password;
 
     private String mobileNumber;
@@ -43,7 +37,7 @@ public class UserEntity {
     private LocalDateTime modifiedTime;
 
     @Builder
-    public UserEntity(String name, String email, String password, String mobileNumber) {
+    public UserJpaEntity(String name, String email, String password, String mobileNumber) {
         this.name = name;
         this.email = email;
         this.password = password;

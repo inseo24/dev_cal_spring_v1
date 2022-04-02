@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ScrapRepository extends JpaRepository<ScrapEntity, Integer> {
+public interface ScrapRepository extends JpaRepository<ScrapJpaEntity, Integer> {
 
 	@Modifying
 	@Query(value = "INSERT INTO scrap(event_id, user_id, created_time) VALUES(:eventId, :userId, now())", nativeQuery = true)
@@ -18,6 +18,6 @@ public interface ScrapRepository extends JpaRepository<ScrapEntity, Integer> {
 	void unscrap(@Param("eventId") String eventId, @Param("userId") String userId);
 
 	@Query(value = "SELECT * FROM scrap WHERE user_id = :userId", nativeQuery = true)
-	List<ScrapEntity> retrieveScrap(@Param("userId") String userId);
+	List<ScrapJpaEntity> retrieveScrap(@Param("userId") String userId);
 
 }

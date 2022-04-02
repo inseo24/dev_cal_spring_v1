@@ -1,60 +1,46 @@
 package com.example.ecommerce.persistence.comment;
 
 import java.time.LocalDateTime;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "Comment")
-public class CommentEntity {
+public class CommentJpaEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	@Column(length = 100, nullable = false)
 	private String comment;
-
 	private String userId;
+	private String boardId;
+	private boolean isDeleted;
 
 	@Builder
-	public CommentEntity(String comment, String userId, String boardId) {
+	public CommentJpaEntity(String comment, String userId, String boardId) {
 		this.comment = comment;
 		this.userId = userId;
 		this.boardId = boardId;
 		this.isDeleted = false;
 	}
 
-	private String boardId;
+	@CreationTimestamp
+	private LocalDateTime createdAt;
 
-	private boolean isDeleted;
+	@UpdateTimestamp
+	private LocalDateTime updatedAt;
 
 	private LocalDateTime deletedAt;
-
-	@CreationTimestamp
-	private LocalDateTime createdTime;
-
-	@PrePersist
-	public void createdTime() {
-		this.createdTime = LocalDateTime.now();
-	}
 
 	public void delete() {
 		this.isDeleted = true;
