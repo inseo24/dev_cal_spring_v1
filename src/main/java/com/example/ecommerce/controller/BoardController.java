@@ -3,7 +3,7 @@ package com.example.ecommerce.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +18,11 @@ import com.example.ecommerce.service.BoardService;
 
 @RestController
 @RequestMapping("/board")
+@RequiredArgsConstructor
 public class BoardController {
 
-	@Autowired
-	public BoardService service;
-
-	@Autowired
-	public UserRepository userRepo;
+	private final BoardService boardService;
+	private final UserRepository userRepository;
 
 	@PostMapping("/image")
 	public ResponseEntity<?> createBoardImg(@AuthenticationPrincipal String userId, ImageDTO imageDTO,
@@ -34,10 +32,10 @@ public class BoardController {
 
 			BoardEntity entity = BoardDTO.toEntity(dto);
 
-			UserEntity userEntity = userRepo.findByUserId(userId);
+			UserEntity userEntity = userRepository.findByUserId(userId);
 			entity.setUserId(userEntity);
 
-			List<BoardEntity> entities = service.createBoard(entity, imageDTO);
+			List<BoardEntity> entities = boardService.createBoard(entity, imageDTO);
 
 			List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
 
@@ -60,11 +58,11 @@ public class BoardController {
 			@RequestBody BoardDTO dto) {
 
 		try {
-			UserEntity userEntity = userRepo.findByUserId(userId);
+			UserEntity userEntity = userRepository.findByUserId(userId);
 			BoardEntity entity = BoardDTO.toEntity(dto);
 			entity.setUserId(userEntity);
 
-			BoardEntity savedEntity = service.create(entity);
+			BoardEntity savedEntity = boardService.create(entity);
 
 			return ResponseEntity.ok().body(savedEntity);
 
@@ -81,7 +79,7 @@ public class BoardController {
 	@GetMapping
 	public ResponseEntity<?> retrieveBoardList(@AuthenticationPrincipal String userId) {
 
-		List<BoardEntity> entities = service.retrieve();
+		List<BoardEntity> entities = boardService.retrieve();
 
 		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
 
@@ -93,7 +91,7 @@ public class BoardController {
 	@GetMapping("/{boardId}")
 	public ResponseEntity<?> retrieveBoardItem(@PathVariable String boardId) {
 
-		List<BoardEntity> entities = service.retrieveItem(boardId);
+		List<BoardEntity> entities = boardService.retrieveItem(boardId);
 
 		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
 
@@ -108,11 +106,11 @@ public class BoardController {
 
 		BoardEntity entity = BoardDTO.toEntity(dto);
 
-		UserEntity userEntity = userRepo.findByUserId(userId);
+		UserEntity userEntity = userRepository.findByUserId(userId);
 
 		entity.setUserId(userEntity);
 
-		List<BoardEntity> entities = service.updateBoard(entity, boardId, imageDTO);
+		List<BoardEntity> entities = boardService.updateBoard(entity, boardId, imageDTO);
 
 		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
 
@@ -128,11 +126,11 @@ public class BoardController {
 
 		BoardEntity entity = BoardDTO.toEntity(dto);
 
-		UserEntity userEntity = userRepo.findByUserId(userId);
+		UserEntity userEntity = userRepository.findByUserId(userId);
 
 		entity.setUserId(userEntity);
 
-		List<BoardEntity> entities = service.updateBoard(entity, boardId);
+		List<BoardEntity> entities = boardService.updateBoard(entity, boardId);
 
 		List<BoardDTO> dtos = entities.stream().map(BoardDTO::new).collect(Collectors.toList());
 
@@ -146,7 +144,7 @@ public class BoardController {
 	public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @PathVariable String boardId) {
 		try {
 
-			service.deleteBoard(boardId);
+			boardService.deleteBoard(boardId);
 
 			return (ResponseEntity<?>) ResponseEntity.ok();
 

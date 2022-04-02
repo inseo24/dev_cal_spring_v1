@@ -4,6 +4,7 @@ package com.example.ecommerce.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +25,10 @@ import com.example.ecommerce.service.CommentService;
 
 @RestController
 @RequestMapping("comment")
+@RequiredArgsConstructor
 public class CommentController {
 
-    @Autowired
-    public CommentService service;
+    private final CommentService service;
 
     @GetMapping
     public ResponseEntity<?> retrieve() {

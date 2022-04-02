@@ -16,7 +16,7 @@ import com.example.ecommerce.persistence.scrap.ScrapRepository;
 @RequiredArgsConstructor
 public class ScrapService {
 	
-	private ScrapRepository scrapRepository;
+	private final ScrapRepository scrapRepository;
 	
 	@Transactional
 	public void scrap(String eventId, String userId) {

@@ -22,7 +22,7 @@ import com.example.ecommerce.service.EventService;
 @RequiredArgsConstructor
 public class EventController {
 
-	public EventService eventService;
+	private final EventService eventService;
 
 	@GetMapping
 	public ResponseEntity<?> retrieveBoardList() {
