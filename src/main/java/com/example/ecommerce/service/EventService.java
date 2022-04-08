@@ -8,7 +8,6 @@ import com.example.ecommerce.mapper.EventMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.example.ecommerce.persistence.event.EventJpaEntity;
 import com.example.ecommerce.persistence.event.EventRepository;
 import org.springframework.transaction.annotation.Transactional;
 
