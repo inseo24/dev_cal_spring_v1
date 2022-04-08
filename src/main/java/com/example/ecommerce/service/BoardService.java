@@ -72,26 +72,27 @@ public class BoardService {
     }
 
     @Transactional
-    public void update(final String userId, final Board board, Long boardId) {
+    public void update(final String userId, final Board board) {
         validate(board);
-        verifyBoardIdExists(boardId);
+        verifyBoardIdExists(board.getBoardId());
         verifyUserIdExists(board.getUserId());
 
-        BoardJpaEntity entity = boardRepository.findByBoardIdAndUserId(boardId, userId).orElseThrow();
-        boardRepository.save(entity);
+        Board originalBoard = boardMapper.mapToDomain(boardRepository.findByBoardIdAndUserId(board.getBoardId(), userId).orElseThrow());
+        originalBoard.update(board.getTitle(), board.getContent());
+        boardRepository.save(boardMapper.mapToJpaEntity(originalBoard));
     }
 
     @Transactional
-    public void updateWithImage(final Board board, Long boardId, Image image) {
+    public void updateWithImage(String userId, final Board board, Image image) {
         validate(board);
-        BoardJpaEntity boardJpaEntity = boardRepository.findByBoardIdAndUserId(boardId, board.getUserId()).orElseThrow();
+        BoardJpaEntity boardJpaEntity = boardRepository.findByBoardIdAndUserId(board.getBoardId(), userId).orElseThrow();
         Board originalBoard = boardMapper.mapToDomain(boardJpaEntity);
         originalBoard.update(board.getTitle(), board.getContent());
 
         String imageFileName = UUID.randomUUID() + "_" + image.getFile().getOriginalFilename();
         String type = imageFilePath(image, imageFileName);
 
-        ImageJpaEntity imageJpaEntity = imageRepository.findByBoardId(boardId).orElseThrow();
+        ImageJpaEntity imageJpaEntity = imageRepository.findByBoardId(board.getBoardId()).orElseThrow();
         Image originalImage = imageMapper.mapToDomain(imageJpaEntity);
 
         originalImage.setType(type);
@@ -102,7 +103,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(Long boardId, String userId) {
+    public void delete(String userId, Long boardId) {
         BoardJpaEntity entity = boardRepository.findByBoardIdAndUserId(boardId, userId).orElseThrow();
         boardRepository.deleteById(entity.getBoardId());
     }
