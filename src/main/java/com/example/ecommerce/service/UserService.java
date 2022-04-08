@@ -2,9 +2,7 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.domain.User;
 import com.example.ecommerce.mapper.UserMapper;
-import com.example.ecommerce.persistence.user.UserJpaEntity;
 import lombok.RequiredArgsConstructor;
-import com.example.ecommerce.dto.UserUpdateDTO;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,6 +53,5 @@ public class UserService {
 
 	private void verifyUniqueEmail(String email) {
 		if (userRepository.existsByEmail(email)) throw new RuntimeException("Email already exists");
-
 	}
 }

@@ -1,8 +1,10 @@
 package com.example.ecommerce.controller;
 
 import com.example.ecommerce.domain.User;
-import com.example.ecommerce.dto.user.UserDTO;
-import com.example.ecommerce.dto.user.request.UserUpdateDTO;
+import com.example.ecommerce.dto.user.request.AuthUserRequestDto;
+import com.example.ecommerce.dto.user.request.CreateUserDto;
+import com.example.ecommerce.dto.user.request.UpdatePasswordDto;
+import com.example.ecommerce.dto.user.response.AuthUserResponseDto;
 import com.example.ecommerce.security.TokenProvider;
 import com.example.ecommerce.service.UserService;
 
@@ -29,27 +31,20 @@ public class UserController {
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/auth/signup")
-    public ResponseEntity<?> register(@RequestBody @Valid UserDTO userDTO) {
-        User user = User.builder()
-                .email(userDTO.getEmail())
-                .name(userDTO.getName())
-                .mobileNumber(userDTO.getMobileNumber())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
-                .build();
-
-        userService.create(user);
+    public ResponseEntity<?> register(@RequestBody @Valid CreateUserDto userDTO) {
+        userService.create(CreateUserDto.toDomain(userDTO));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/auth/signin")
-    public ResponseEntity<?> authenticate(@RequestBody @Valid UserDTO userDTO) {
+    public ResponseEntity<?> authenticate(@RequestBody @Valid AuthUserRequestDto userDTO) {
         User user = userService.getByCredentials(userDTO.getEmail(), userDTO.getPassword(), passwordEncoder);
-        return ResponseEntity.ok().body(UserDTO.builder().token(tokenProvider.create(user)).build());
+        return ResponseEntity.ok().body(new AuthUserResponseDto(tokenProvider.create(user)));
     }
 
     @PutMapping("/auth/update")
     public ResponseEntity<HttpStatus> updatePassword(@AuthenticationPrincipal String userId,
-                                                     @RequestBody @Valid UserUpdateDTO userDTO) {
+                                                     @RequestBody @Valid UpdatePasswordDto userDTO) {
         userService.updatePassword(userId, passwordEncoder.encode(userDTO.getPassword()));
         return ResponseEntity.ok(HttpStatus.OK);
     }
