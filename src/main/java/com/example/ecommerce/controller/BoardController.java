@@ -25,11 +25,12 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    // TODO ResponseEntity<?> <- 여기 이렇게 물음표 쓰는 방식 정말 좋은 걸까? 다른 문제는 없을까?
     @PostMapping("/image")
     public ResponseEntity<?> createWithImage(@AuthenticationPrincipal String userId,
                                              CreateImageDto imageDTO,
                                              @RequestPart(value = "data", required = false) CreateBoardDto boardDTO) {
-        boardService.createWithImage(CreateBoardDto.toDomain(boardDTO), CreateImageDto.toDomain(imageDTO));
+        boardService.createWithImage(userId, CreateBoardDto.toDomain(boardDTO), CreateImageDto.toDomain(imageDTO));
         return ok().body(HttpStatus.OK);
     }
 
