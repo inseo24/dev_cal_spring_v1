@@ -9,11 +9,9 @@ public class BoardDTO {
 	private String title;
 	private String content;
 	private String userId;
-	private Long imageId;
 
 	@Builder
 	public BoardDTO(final Board board) {
-		this.imageId = board.getImageId();
 		this.title = board.getTitle();
 		this.content = board.getContent();
 		this.userId = board.getUserId();
@@ -24,7 +22,6 @@ public class BoardDTO {
 				.title(dto.getTitle())
 				.userId(dto.getUserId())
 				.content(dto.getContent())
-				.imageId(dto.getImageId())
 				.build();
 	}
 }
