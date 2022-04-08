@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.ecommerce.domain.Comment;
+import com.example.ecommerce.dto.comment.request.CreateCommentDto;
+import com.example.ecommerce.dto.comment.request.UpdateCommentDto;
+import com.example.ecommerce.dto.comment.response.CommentResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ecommerce.dto.comment.CommentDTO;
 import com.example.ecommerce.service.CommentService;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -37,20 +39,20 @@ public class CommentController {
     @GetMapping("/{boardId}")
     public ResponseEntity<?> retrieveByBoardId(@PathVariable String boardId) {
         List<Comment> commentList = service.retrieveByBoardId(boardId);
-        return ok().body(commentList.stream().map(CommentDTO::new).collect(Collectors.toList()));
+        return ok().body(commentList.stream().map(CommentResponseDto::new).collect(Collectors.toList()));
     }
 
     @PostMapping
-    public ResponseEntity<?> save(@AuthenticationPrincipal String userId, @RequestBody CommentDTO commentDTO) {
+    public ResponseEntity<?> create(@AuthenticationPrincipal String userId, @RequestBody CreateCommentDto commentDTO) {
         service.create(commentDTO.getComment(), commentDTO.getBoardId(), userId);
         return ok().body(HttpStatus.CREATED);
     }
 
     @PutMapping("/{commentId}/update")
     public ResponseEntity<?> update(@AuthenticationPrincipal String userId,
-										   @RequestBody CommentDTO commentDTO,
+										   @RequestBody UpdateCommentDto commentDTO,
 										   @PathVariable Long commentId) {
-        service.update(commentDTO.getComment(), commentId);
+        service.update(userId, commentDTO.getComment(), commentId);
         return ok(HttpStatus.OK);
     }
 

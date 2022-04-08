@@ -40,9 +40,9 @@ public class BoardService {
     private String uploadFolder;
 
     @Transactional
-    public void createWithImage(final Board board, Image image) {
+    public void createWithImage(String userId, final Board board, Image image) {
         validate(board);
-        verifyUserIdExists(board.getUserId());
+        verifyUserIdExists(userId);
 
         String imageFileName = UUID.randomUUID() + "_" + image.getFile().getOriginalFilename();
         imageFilePath(image, imageFileName);

@@ -49,7 +49,10 @@ public class CommentService {
     }
 
     @Transactional
-    public void update(String comment, Long id) {
+    public void update(String userId, String comment, Long id) {
+        // TODO userID 체크하는 로직이 필요할 거 같다. 위에 delete 도.
+        userRepository.findByUserId(userId).orElseThrow();
+
         CommentJpaEntity entity = commentRepository.findById(id).orElseThrow();
         entity.update(comment);
     }
