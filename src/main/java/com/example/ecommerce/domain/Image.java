@@ -23,11 +23,15 @@ public class Image {
         this.name = name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setType(String type){
+    public void setType(String type) {
         this.type = type;
+    }
+
+    public void setBoardId(Long boardId) {
+        this.boardId = boardId;
     }
 }

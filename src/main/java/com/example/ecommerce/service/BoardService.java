@@ -47,9 +47,10 @@ public class BoardService {
         String imageFileName = UUID.randomUUID() + "_" + image.getFile().getOriginalFilename();
         imageFilePath(image, imageFileName);
 
-        ImageJpaEntity imageJpaEntity = imageRepository.save(imageMapper.mapToJpaEntity(image));
-        board.setImageId(imageJpaEntity.getId());
-        boardRepository.save(boardMapper.mapToJpaEntity(board));
+        BoardJpaEntity boardJpaEntity = boardRepository.save(boardMapper.mapToJpaEntity(board));
+
+        image.setBoardId(board.getBoardId());
+        imageRepository.save(imageMapper.mapToJpaEntity(image));
     }
 
     @Transactional
