@@ -49,7 +49,7 @@ public class BoardService {
 
         BoardJpaEntity boardJpaEntity = boardRepository.save(boardMapper.mapToJpaEntity(board));
 
-        image.setBoardId(board.getBoardId());
+        image.setBoardId(boardJpaEntity.getBoardId());
         imageRepository.save(imageMapper.mapToJpaEntity(image));
     }
 
