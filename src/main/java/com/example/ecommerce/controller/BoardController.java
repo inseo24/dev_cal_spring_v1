@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.ecommerce.dto.image.request.CreateImageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,9 @@ public class BoardController {
 
     @PostMapping("/image")
     public ResponseEntity<?> createWithImage(@AuthenticationPrincipal String userId,
-                                             ImageDTO imageDTO,
+                                             CreateImageDto imageDTO,
                                              @RequestPart(value = "data", required = false) BoardDTO boardDTO) {
-        boardService.createWithImage(BoardDTO.toDomain(boardDTO), ImageDTO.toDomain(imageDTO));
+        boardService.createWithImage(BoardDTO.toDomain(boardDTO), CreateImageDto.toDomain(imageDTO));
         return ok().body(HttpStatus.OK);
     }
 
